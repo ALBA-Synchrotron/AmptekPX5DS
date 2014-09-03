@@ -66,5 +66,4 @@ int main(int argc,char *argv[])
 		tg->server_cleanup();
 	return(0);
 }
-/*PROTECTED REGION END*/
-//========================================================
+/*PROTECTED REGION END*/	//	AmptekPX5::main.cpp

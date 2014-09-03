@@ -37,28 +37,27 @@ static const char *RcsId = "$Id:  $";
 #include <pthread.h>
 #include <iostream> 
 #include <semaphore.h>
+#include <string>
 
 
 
 
-/*----- PROTECTED REGION END -----*/
-
+/*----- PROTECTED REGION END -----*/	//	AmptekPX5.cpp
 
 /**
- *	AmptekPX5 class description:
- *	Device server to control the MCA Amptek PX5. 
- *	The device server implements the communication by UDP socket. It can start and stop one acquisition and after read the Spectrum data. 
- *	In addition it exports some configuration attributes and a command to send ascii commands.
- *	 
+ *  AmptekPX5 class description:
+ *    Device server to control the MCA Amptek PX5. 
+ *    The device server implements the communication by UDP socket. It can start and stop one acquisition and after read the Spectrum data. 
+ *    In addition it exports some configuration attributes and a command to send ascii commands.
+ *     
  */
 
 //================================================================
-//
 //  The following table gives the correspondence
 //  between command and method names.
 //
 //  Command name          |  Method name
-//----------------------------------------------------------------
+//================================================================
 //  State                 |  dev_state
 //  Status                |  Inherited (no method)
 //  SetTextConfiguration  |  set_text_configuration
@@ -72,25 +71,59 @@ static const char *RcsId = "$Id:  $";
 //  AutoTune              |  auto_tune
 //================================================================
 
+//================================================================
+//  Attributes managed are:
+//================================================================
+//  AcquisitionTime  |  Tango::DevDouble	Scalar
+//  AuxOut1          |  Tango::DevString	Scalar
+//  Clock            |  Tango::DevLong	Scalar
+//  CoarseGain       |  Tango::DevShort	Scalar
+//  Con1             |  Tango::DevString	Scalar
+//  DeadTime         |  Tango::DevDouble	Scalar
+//  FastCount        |  Tango::DevULong	Scalar
+//  FineGain         |  Tango::DevDouble	Scalar
+//  FlatTopWidth     |  Tango::DevDouble	Scalar
+//  MCAC             |  Tango::DevULong	Scalar
+//  PeakingTime      |  Tango::DevDouble	Scalar
+//  PileupReject     |  Tango::DevString	Scalar
+//  SCA1HT           |  Tango::DevULong	Scalar
+//  SCA1LT           |  Tango::DevULong	Scalar
+//  SCA2HT           |  Tango::DevULong	Scalar
+//  SCA2LT           |  Tango::DevULong	Scalar
+//  SCA3HT           |  Tango::DevULong	Scalar
+//  SCA3LT           |  Tango::DevLong	Scalar
+//  SCA4HT           |  Tango::DevULong	Scalar
+//  SCA4LT           |  Tango::DevULong	Scalar
+//  SCA5HT           |  Tango::DevULong	Scalar
+//  SCA5LT           |  Tango::DevULong	Scalar
+//  SCA6HT           |  Tango::DevULong	Scalar
+//  SCA6LT           |  Tango::DevULong	Scalar
+//  SCA7HT           |  Tango::DevULong	Scalar
+//  SCA7LT           |  Tango::DevULong	Scalar
+//  SCA8HT           |  Tango::DevULong	Scalar
+//  SCA8LT           |  Tango::DevULong	Scalar
+//  SlowCount        |  Tango::DevULong	Scalar
+//  TotalGain        |  Tango::DevDouble	Scalar
+//  Spectrum         |  Tango::DevULong	Spectrum  ( max = 8192)
+//================================================================
+
 namespace AmptekPX5_ns
 {
-	/*----- PROTECTED REGION ID(AmptekPX5::namespace_starting) ENABLED START -----*/
+/*----- PROTECTED REGION ID(AmptekPX5::namespace_starting) ENABLED START -----*/
 
         //      static initializations
 
         /*----- PROTECTED REGION END -----*/	//	AmptekPX5::namespace_starting
 
-
-
 //--------------------------------------------------------
 /**
  *	Method      : AmptekPX5::AmptekPX5()
  *	Description : Constructors for a Tango device
- *	              implementing the class AmptekPX5
+ *                implementing the classAmptekPX5
  */
 //--------------------------------------------------------
 AmptekPX5::AmptekPX5(Tango::DeviceClass *cl, string &s)
- 	: Tango::Device_4Impl(cl, s.c_str())
+ : TANGO_BASE_CLASS(cl, s.c_str())
 {
 	/*----- PROTECTED REGION ID(AmptekPX5::constructor_1) ENABLED START -----*/
 
@@ -100,7 +133,7 @@ AmptekPX5::AmptekPX5(Tango::DeviceClass *cl, string &s)
 }
 //--------------------------------------------------------
 AmptekPX5::AmptekPX5(Tango::DeviceClass *cl, const char *s)
- 	: Tango::Device_4Impl(cl, s)
+ : TANGO_BASE_CLASS(cl, s)
 {
 	/*----- PROTECTED REGION ID(AmptekPX5::constructor_2) ENABLED START -----*/
 
@@ -110,7 +143,7 @@ AmptekPX5::AmptekPX5(Tango::DeviceClass *cl, const char *s)
 }
 //--------------------------------------------------------
 AmptekPX5::AmptekPX5(Tango::DeviceClass *cl, const char *s, const char *d)
- 	: Tango::Device_4Impl(cl, s, d)
+ : TANGO_BASE_CLASS(cl, s, d)
 {
 	/*----- PROTECTED REGION ID(AmptekPX5::constructor_3) ENABLED START -----*/
 
@@ -119,48 +152,63 @@ AmptekPX5::AmptekPX5(Tango::DeviceClass *cl, const char *s, const char *d)
         /*----- PROTECTED REGION END -----*/	//	AmptekPX5::constructor_3
 }
 
-
 //--------------------------------------------------------
 /**
- *	Method      : AmptekPX5::delete_device()()
+ *	Method      : AmptekPX5::delete_device()
  *	Description : will be called at device destruction or at init command
  */
 //--------------------------------------------------------
 void AmptekPX5::delete_device()
 {
+	DEBUG_STREAM << "AmptekPX5::delete_device() " << device_name << endl;
 	/*----- PROTECTED REGION ID(AmptekPX5::delete_device) ENABLED START -----*/
 
         //      Delete device allocated objects
     delete commHandler;
 
         /*----- PROTECTED REGION END -----*/	//	AmptekPX5::delete_device
-	delete[] attr_FastCount_read;
-	delete[] attr_SlowCount_read;
 	delete[] attr_AcquisitionTime_read;
-	delete[] attr_CoarseGain_read;
-	delete[] attr_PileupReject_read;
-	delete[] attr_FlatTopWidth_read;
-	delete[] attr_PeakingTime_read;
-	delete[] attr_MCAC_read;
-	delete[] attr_FineGain_read;
-	delete[] attr_TotalGain_read;
+	delete[] attr_AuxOut1_read;
 	delete[] attr_Clock_read;
+	delete[] attr_CoarseGain_read;
+	delete[] attr_Con1_read;
 	delete[] attr_DeadTime_read;
+	delete[] attr_FastCount_read;
+	delete[] attr_FineGain_read;
+	delete[] attr_FlatTopWidth_read;
+	delete[] attr_MCAC_read;
+	delete[] attr_PeakingTime_read;
+	delete[] attr_PileupReject_read;
+	delete[] attr_SCA1HT_read;
+	delete[] attr_SCA1LT_read;
+	delete[] attr_SCA2HT_read;
+	delete[] attr_SCA2LT_read;
+	delete[] attr_SCA3HT_read;
+	delete[] attr_SCA3LT_read;
+	delete[] attr_SCA4HT_read;
+	delete[] attr_SCA4LT_read;
+	delete[] attr_SCA5HT_read;
+	delete[] attr_SCA5LT_read;
+	delete[] attr_SCA6HT_read;
+	delete[] attr_SCA6LT_read;
+	delete[] attr_SCA7HT_read;
+	delete[] attr_SCA7LT_read;
+	delete[] attr_SCA8HT_read;
+	delete[] attr_SCA8LT_read;
+	delete[] attr_SlowCount_read;
+	delete[] attr_TotalGain_read;
 	delete[] attr_Spectrum_read;
-	
 }
-
 
 //--------------------------------------------------------
 /**
  *	Method      : AmptekPX5::init_device()
- *	Description : //	will be called at device initialization.
+ *	Description : will be called at device initialization.
  */
 //--------------------------------------------------------
 void AmptekPX5::init_device()
 {
 	DEBUG_STREAM << "AmptekPX5::init_device() create device " << device_name << endl;
-
 	/*----- PROTECTED REGION ID(AmptekPX5::init_device_before) ENABLED START -----*/
 
         //      Initialization before get_device_property() call
@@ -168,29 +216,56 @@ void AmptekPX5::init_device()
 
         /*----- PROTECTED REGION END -----*/	//	AmptekPX5::init_device_before
 	
-	//	Get the device properties (if any) from database
+
+	//	Get the device properties from database
 	get_device_property();
 	
-	attr_FastCount_read = new Tango::DevULong[1];
-	attr_SlowCount_read = new Tango::DevULong[1];
 	attr_AcquisitionTime_read = new Tango::DevDouble[1];
+	attr_AuxOut1_read = new Tango::DevString[1];
+	attr_Clock_read = new Tango::DevLong[1];
 	attr_CoarseGain_read = new Tango::DevShort[1];
-	attr_PileupReject_read = new Tango::DevString[1];
-	attr_FlatTopWidth_read = new Tango::DevDouble[1];
-	attr_PeakingTime_read = new Tango::DevDouble[1];
-	attr_MCAC_read = new Tango::DevULong[1];
-	attr_FineGain_read = new Tango::DevDouble[1];
-	attr_TotalGain_read = new Tango::DevDouble[1];
-	attr_Clock_read = new Tango::DevDouble[1];
+	attr_Con1_read = new Tango::DevString[1];
 	attr_DeadTime_read = new Tango::DevDouble[1];
+	attr_FastCount_read = new Tango::DevULong[1];
+	attr_FineGain_read = new Tango::DevDouble[1];
+	attr_FlatTopWidth_read = new Tango::DevDouble[1];
+	attr_MCAC_read = new Tango::DevULong[1];
+	attr_PeakingTime_read = new Tango::DevDouble[1];
+	attr_PileupReject_read = new Tango::DevString[1];
+	attr_SCA1HT_read = new Tango::DevULong[1];
+	attr_SCA1LT_read = new Tango::DevULong[1];
+	attr_SCA2HT_read = new Tango::DevULong[1];
+	attr_SCA2LT_read = new Tango::DevULong[1];
+	attr_SCA3HT_read = new Tango::DevULong[1];
+	attr_SCA3LT_read = new Tango::DevLong[1];
+	attr_SCA4HT_read = new Tango::DevULong[1];
+	attr_SCA4LT_read = new Tango::DevULong[1];
+	attr_SCA5HT_read = new Tango::DevULong[1];
+	attr_SCA5LT_read = new Tango::DevULong[1];
+	attr_SCA6HT_read = new Tango::DevULong[1];
+	attr_SCA6LT_read = new Tango::DevULong[1];
+	attr_SCA7HT_read = new Tango::DevULong[1];
+	attr_SCA7LT_read = new Tango::DevULong[1];
+	attr_SCA8HT_read = new Tango::DevULong[1];
+	attr_SCA8LT_read = new Tango::DevULong[1];
+	attr_SlowCount_read = new Tango::DevULong[1];
+	attr_TotalGain_read = new Tango::DevDouble[1];
 	attr_Spectrum_read = new Tango::DevULong[8192];
-	
+
 	/*----- PROTECTED REGION ID(AmptekPX5::init_device) ENABLED START -----*/
 
         //      Initialize device
     try
     {
         commHandler = new AmptekCommHandler(hostname.c_str(), port, timeout, this);
+        DEBUG_STREAM <<"Reset the configuration to a known state." << endl;
+       	Tango::DevVarStringArray *send_cmd;
+       	send_cmd = new Tango::DevVarStringArray();
+       	send_cmd->length(1);
+       	string cmd = "RESC=Y";
+        (*send_cmd)[0] = CORBA::string_dup(cmd.c_str());
+    	this->set_text_configuration(send_cmd);
+    	delete(send_cmd);
     }
     catch(AmptekException& e)
     {
@@ -203,12 +278,10 @@ void AmptekPX5::init_device()
     /*----- PROTECTED REGION END -----*/	//	AmptekPX5::init_device
 }
 
-
-
 //--------------------------------------------------------
 /**
  *	Method      : AmptekPX5::get_device_property()
- *	Description : //	Add your own code to initialize
+ *	Description : Read database to initialize property data members.
  */
 //--------------------------------------------------------
 void AmptekPX5::get_device_property()
@@ -284,14 +357,13 @@ void AmptekPX5::get_device_property()
 		//	And try to extract NrOfUdpAttempts value from database
 		if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  nrOfUdpAttempts;
 
-
 	}
+
 	/*----- PROTECTED REGION ID(AmptekPX5::get_device_property_after) ENABLED START -----*/
 
         //      Check device property data members init
 
         /*----- PROTECTED REGION END -----*/	//	AmptekPX5::get_device_property_after
-
 }
 
 //--------------------------------------------------------
@@ -310,33 +382,1310 @@ void AmptekPX5::always_executed_hook()
         /*----- PROTECTED REGION END -----*/	//	AmptekPX5::always_executed_hook
 }
 
-
-
 //--------------------------------------------------------
 /**
  *	Method      : AmptekPX5::read_attr_hardware()
- *	Description : Hardware acquisition for attributes.
+ *	Description : Hardware acquisition for attributes
  */
 //--------------------------------------------------------
-void AmptekPX5::read_attr_hardware(vector<long> &attr_list)
+void AmptekPX5::read_attr_hardware(TANGO_UNUSED(vector<long> &attr_list))
 {
 	DEBUG_STREAM << "AmptekPX5::read_attr_hardware(vector<long> &attr_list) entering... " << endl;
 	/*----- PROTECTED REGION ID(AmptekPX5::read_attr_hardware) ENABLED START -----*/
 
-        //      Add your own code
+	//      Add your own code
+	long nr_attr = attr_list.size();
+	Tango::DevVarStringArray *send_cmd, *result;
+	send_cmd = new Tango::DevVarStringArray();
+	long count_cmd = 0;
 
-        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_attr_hardware
+	string cmd, argout;
+	string att_name;
+	std::ostringstream buff;
 
+	for (long i = 0; i < nr_attr; i++){
+		att_name = dev_attr->get_attr_by_ind(attr_list[i]).get_name();
+		if (att_name.compare("AuxOut1") == 0 ) {
+			DEBUG_STREAM <<"Read AuxOut1" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "AUO1";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("AcquisitionTime") == 0){
+			DEBUG_STREAM <<"Read AcquisitionTime" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "PRET";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("Clock") == 0){
+			DEBUG_STREAM <<"Read Clock" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "CLCK";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("CoarseGain") == 0){
+			DEBUG_STREAM <<"Read CoarseGain" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "GAIA";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("Con1") == 0){
+			DEBUG_STREAM <<"Read Con1" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "CON1";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("FineGain") == 0){
+			DEBUG_STREAM <<"Read FineGain" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "GAIF";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("FlatTopWidth") == 0){
+			DEBUG_STREAM <<"Read FlatTopWidth" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "TFLA";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("MCAC") == 0){
+			DEBUG_STREAM <<"Read MCAC" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "MCAC";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("PeakingTime") == 0){
+			DEBUG_STREAM <<"Read PeakingTime" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "TPEA";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("PileupReject") == 0){
+			DEBUG_STREAM <<"Read PileupReject" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "PURE";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA1LT") == 0){
+			DEBUG_STREAM <<"Read SCA1LT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=1";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAL";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA1HT") == 0){
+			DEBUG_STREAM <<"Read SCA1HT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=1";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAH";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA2LT") == 0){
+			DEBUG_STREAM <<"Read SCA2LT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=2";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAL";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA2HT") == 0){
+			DEBUG_STREAM <<"Read SCA2HT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=2";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAH";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA3LT") == 0){
+			DEBUG_STREAM <<"Read SCA3LT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=3";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAL";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA3HT") == 0){
+			DEBUG_STREAM <<"Read SCA3HT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=3";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAH";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA4LT") == 0){
+			DEBUG_STREAM <<"Read SCA4LT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=4";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAL";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA4HT") == 0){
+			DEBUG_STREAM <<"Read SCA4HT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=4";
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAH";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA5LT") == 0){
+			DEBUG_STREAM <<"Read SCA5LT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=5";
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAL";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA5HT") == 0){
+			DEBUG_STREAM <<"Read SCA5HT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=5";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAH";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA6LT") == 0){
+			DEBUG_STREAM <<"Read SCA6LT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=6";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAL";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA6HT") == 0){
+			DEBUG_STREAM <<"Read SCA6HT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=6";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAH";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA7LT") == 0){
+			DEBUG_STREAM <<"Read SCA7LT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=7";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAL";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA7HT") == 0){
+			DEBUG_STREAM <<"Read SCA7HT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=7";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAH";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA8LT") == 0){
+			DEBUG_STREAM <<"Read SCA8LT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=8";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAL";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA8HT") == 0){
+			DEBUG_STREAM <<"Read SCA8HT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=8";
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAH";
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+	}
+	result = this->get_text_configuration(send_cmd);
+	for(long i=0; i< result->length(); i++ ){
+		argout = CORBA::string_dup((*result)[i]);
+		if(argout.find("AUO1")!=string::npos){
+			DEBUG_STREAM <<"Result of AuxOut1: " << argout << endl;
+			argout.erase(0,5); //cmd+=
+			*attr_AuxOut1_read = CORBA::string_dup(argout.c_str());
+		}
+		else if(argout.find("PRET")!=string::npos){
+			DEBUG_STREAM <<"Result of AcquisitionTime: " << argout << endl;
+			argout.erase(0,5); //cmd+=
+			*attr_AcquisitionTime_read = atof(argout.c_str());
+		}
+		else if(argout.find("CLCK")!=string::npos){
+			DEBUG_STREAM <<"Result of Clock: " << argout << endl;
+			argout.erase(0,5); //cmd+=
+			*attr_Clock_read = atoi(argout.c_str());
+		}
+		else if(argout.find("GAIA")!=string::npos){
+			DEBUG_STREAM <<"Result of CoarseGain: " << argout << endl;
+			argout.erase(0,5); //cmd+=
+			*attr_CoarseGain_read = atoi(argout.c_str());
+		}
+		else if(argout.find("CON1")!=string::npos){
+			DEBUG_STREAM <<"Result of Con1: " << argout << endl;
+			argout.erase(0,5); //cmd+=
+			*attr_Con1_read = CORBA::string_dup(argout.c_str());
+		}
+		else if(argout.find("GAIF")!=string::npos){
+			DEBUG_STREAM <<"Result of FineGain: " << argout << endl;
+			argout.erase(0,5); //cmd+=
+			*attr_FineGain_read = atof(argout.c_str());
+		}
+		else if(argout.find("TFLA")!=string::npos){
+			DEBUG_STREAM <<"Result of FlatTopWidth: " << argout << endl;
+			argout.erase(0,5); //cmd+=
+			*attr_FlatTopWidth_read = atof(argout.c_str());
+		}
+		else if(argout.find("MCAC")!=string::npos){
+			DEBUG_STREAM <<"Result of MCAC: " << argout << endl;
+			argout.erase(0,5); //cmd+=
+			*attr_MCAC_read = atoi(argout.c_str());
+		}
+		else if(argout.find("TPEA")!=string::npos){
+			DEBUG_STREAM <<"Result of PeakingTime: " << argout << endl;
+			argout.erase(0,5); //cmd+=
+			*attr_PeakingTime_read = atof(argout.c_str());
+		}
+		else if(argout.find("PURE")!=string::npos){
+			DEBUG_STREAM <<"Result of PileupReject: " << argout << endl;
+			argout.erase(0,5); //cmd+=
+			*attr_PileupReject_read = CORBA::string_dup(argout.c_str());
+		}
+		else if(argout.find("SCAI=1")!=string::npos){
+			i++;
+			argout = CORBA::string_dup((*result)[i]);
+			if(argout.find("SCAL")!=string::npos){
+				DEBUG_STREAM <<"Result of SCA1LT: " << argout << endl;
+				argout.erase(0,5); //cmd+=
+				*attr_SCA1LT_read = atoi(argout.c_str());
+			}
+			else if(argout.find("SCAH")!=string::npos){
+				DEBUG_STREAM <<"Result of SCA1HT: " << argout << endl;
+				argout.erase(0,5); //cmd+=
+				*attr_SCA1HT_read = atoi(argout.c_str());
+			}
+		}
+		else if(argout.find("SCAI=2")!=string::npos){
+			i++;
+			argout = CORBA::string_dup((*result)[i]);
+			if(argout.find("SCAL")!=string::npos){
+				DEBUG_STREAM <<"Result of SCA2LT: " << argout << endl;
+				argout.erase(0,5); //cmd+=
+				*attr_SCA2LT_read = atoi(argout.c_str());
+			}
+			else if(argout.find("SCAH")!=string::npos){
+				DEBUG_STREAM <<"Result of SCA2HT: " << argout << endl;
+				argout.erase(0,5); //cmd+=
+				*attr_SCA2HT_read = atoi(argout.c_str());
+			}
+		}
+		else if(argout.find("SCAI=3")!=string::npos){
+			i++;
+			argout = CORBA::string_dup((*result)[i]);
+			if(argout.find("SCAL")!=string::npos){
+				DEBUG_STREAM <<"Result of SCA3LT: " << argout << endl;
+				argout.erase(0,5); //cmd+=
+				*attr_SCA3LT_read = atoi(argout.c_str());
+			}
+			else if(argout.find("SCAH")!=string::npos){
+				DEBUG_STREAM <<"Result of SCA3HT: " << argout << endl;
+				argout.erase(0,5); //cmd+=
+				*attr_SCA3HT_read = atoi(argout.c_str());
+			}
+		}
+		else if(argout.find("SCAI=4")!=string::npos){
+			i++;
+			argout = CORBA::string_dup((*result)[i]);
+			if(argout.find("SCAL")!=string::npos){
+				DEBUG_STREAM <<"Result of SCA4LT: " << argout << endl;
+				argout.erase(0,5); //cmd+=
+				*attr_SCA1LT_read = atoi(argout.c_str());
+			}
+			else if(argout.find("SCAH")!=string::npos){
+				DEBUG_STREAM <<"Result of SCA4HT: " << argout << endl;
+				argout.erase(0,5); //cmd+=
+				*attr_SCA4HT_read = atoi(argout.c_str());
+			}
+		}
+		else if(argout.find("SCAI=5")!=string::npos){
+			i++;
+			argout = CORBA::string_dup((*result)[i]);
+			if(argout.find("SCAL")!=string::npos){
+				DEBUG_STREAM <<"Result of SCA5LT: " << argout << endl;
+				argout.erase(0,5); //cmd+=
+				*attr_SCA5LT_read = atoi(argout.c_str());
+			}
+			else if(argout.find("SCAH")!=string::npos){
+				DEBUG_STREAM <<"Result of SCA5HT: " << argout << endl;
+				argout.erase(0,5); //cmd+=
+				*attr_SCA5HT_read = atoi(argout.c_str());
+			}
+		}
+		else if(argout.find("SCAI=6")!=string::npos){
+			i++;
+			argout = CORBA::string_dup((*result)[i]);
+			if(argout.find("SCAL")!=string::npos){
+				DEBUG_STREAM <<"Result of SCA6LT: " << argout << endl;
+				argout.erase(0,5); //cmd+=
+				*attr_SCA1LT_read = atoi(argout.c_str());
+			}
+			else if(argout.find("SCAH")!=string::npos){
+				DEBUG_STREAM <<"Result of SCA6HT: " << argout << endl;
+				argout.erase(0,5); //cmd+=
+				*attr_SCA6HT_read = atoi(argout.c_str());
+			}
+		}
+		else if(argout.find("SCAI=7")!=string::npos){
+			i++;
+			argout = CORBA::string_dup((*result)[i]);
+			if(argout.find("SCAL")!=string::npos){
+				DEBUG_STREAM <<"Result of SCA7LT: " << argout << endl;
+				argout.erase(0,5); //cmd+=
+				*attr_SCA7LT_read = atoi(argout.c_str());
+			}
+			else if(argout.find("SCAH")!=string::npos){
+				DEBUG_STREAM <<"Result of SCA7HT: " << argout << endl;
+				argout.erase(0,5); //cmd+=
+				*attr_SCA7HT_read = atoi(argout.c_str());
+			}
+		}
+		else if(argout.find("SCAI=8")!=string::npos){
+			i++;
+			argout = CORBA::string_dup((*result)[i]);
+			if(argout.find("SCAL")!=string::npos){
+				DEBUG_STREAM <<"Result of SCA8LT: " << argout << endl;
+				argout.erase(0,5); //cmd+=
+				*attr_SCA8LT_read = atoi(argout.c_str());
+			}
+			else if(argout.find("SCAH")!=string::npos){
+				DEBUG_STREAM <<"Result of SCA8HT: " << argout << endl;
+				argout.erase(0,5); //cmd+=
+				*attr_SCA8HT_read = atoi(argout.c_str());
+			}
+		}
+	}
+	delete(send_cmd);
+	delete(result);
+
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_attr_hardware
 }
+//--------------------------------------------------------
+/**
+ *	Method      : AmptekPX5::write_attr_hardware()
+ *	Description : Hardware writing for attributes
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_attr_hardware(TANGO_UNUSED(vector<long> &attr_list))
+{
+	DEBUG_STREAM << "AmptekPX5::write_attr_hardware(vector<long> &attr_list) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::write_attr_hardware) ENABLED START -----*/
+	
+	//	Add your own code
+	long nr_attr = attr_list.size();
+	Tango::DevVarStringArray *send_cmd;
+	send_cmd = new Tango::DevVarStringArray();
+	long count_cmd = 0;
 
+	string cmd;
+	string att_name;
+	std::ostringstream buff;
+
+	for (long i = 0; i < nr_attr; i++){
+		att_name = dev_attr->get_attr_by_ind(attr_list[i]).get_name();
+		if (att_name.compare("AuxOut1") == 0 ) {
+			DEBUG_STREAM <<"Write AuxOut1" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "AUO1=";
+			buff.str("");
+			buff << *attr_AuxOut1_read;
+			cmd += buff.str();
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("AcquisitionTime") == 0){
+			DEBUG_STREAM <<"Write AcquisitionTime" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "PRET=";
+			buff.str("");
+			buff << *attr_AcquisitionTime_read;
+			cmd += buff.str();
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("Clock") == 0){
+			DEBUG_STREAM <<"Write Clock" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "CLCK=";
+			buff.str("");
+			buff << *attr_Clock_read;
+			cmd += buff.str();
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("CoarseGain") == 0){
+			DEBUG_STREAM <<"Write CoarseGain" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "GAIA=";
+			buff.str("");
+			buff << *attr_CoarseGain_read;
+			cmd += buff.str();
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("Con1") == 0){
+			DEBUG_STREAM <<"Write Con1" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "CON1=";
+			buff.str("");
+			buff << *attr_Con1_read;
+			cmd += buff.str();
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("FineGain") == 0){
+			DEBUG_STREAM <<"Write FineGain" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "GAIF=";
+			buff.str("");
+			buff << *attr_FineGain_read;
+			cmd += buff.str();
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("FlatTopWidth") == 0){
+			DEBUG_STREAM <<"Write FlatTopWidth" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "TFLA=";
+			buff.str("");
+			buff << *attr_FlatTopWidth_read;
+			cmd += buff.str();
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("MCAC") == 0){
+			DEBUG_STREAM <<"Write MCAC" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "MCAC=";
+			buff.str("");
+			buff << *attr_MCAC_read;
+			cmd += buff.str();
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("PeakingTime") == 0){
+			DEBUG_STREAM <<"Write PeakingTime" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "TPEA=";
+			buff.str("");
+			buff << *attr_PeakingTime_read;
+			cmd += buff.str();
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("PileupReject") == 0){
+			DEBUG_STREAM <<"Write PileupReject" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "PURE=";
+			buff.str("");
+			buff << *attr_PileupReject_read;
+			cmd += buff.str();
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA1LT") == 0){
+			DEBUG_STREAM <<"Write SCA1LT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=1";
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAL=";
+			buff.str("");
+			buff << *attr_SCA1LT_read;
+			cmd += buff.str();
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA1HT") == 0){
+			DEBUG_STREAM <<"Write SCA1HT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=1";
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAH=";
+			buff.str("");
+			buff << *attr_SCA1HT_read;
+			cmd += buff.str();
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA2LT") == 0){
+			DEBUG_STREAM <<"Write SCA2LT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=2";
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAL=";
+			buff.str("");
+			buff << *attr_SCA2LT_read;
+			cmd += buff.str();
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA2HT") == 0){
+			DEBUG_STREAM <<"Write SCA2HT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=2";
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAH=";
+			buff.str("");
+			buff << *attr_SCA2HT_read;
+			cmd += buff.str();
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA3LT") == 0){
+			DEBUG_STREAM <<"Write SCA3LT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=3";
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAL=";
+			buff.str("");
+			DEBUG_STREAM << buff.str() <<endl;
+			buff << *attr_SCA3LT_read;
+			cmd += buff.str();
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA3HT") == 0){
+			DEBUG_STREAM <<"Write SCA3HT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=3";
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAH=";
+			buff.str("");
+			buff << *attr_SCA3HT_read;
+			cmd += buff.str();
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA4LT") == 0){
+			DEBUG_STREAM <<"Write SCA4LT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=4";
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAL=";
+			buff.str("");
+			buff << *attr_SCA4LT_read;
+			cmd += buff.str();
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA4HT") == 0){
+			DEBUG_STREAM <<"Write SCA4HT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=4";
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAH=";
+			buff.str("");
+			buff << *attr_SCA4HT_read;
+			cmd += buff.str();
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA5LT") == 0){
+			DEBUG_STREAM <<"Write SCA5LT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=5";
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAL=";
+			buff.str("");
+			buff << *attr_SCA5LT_read;
+			cmd += buff.str();
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA5HT") == 0){
+			DEBUG_STREAM <<"Write SCA5HT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=5";
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAH=";
+			buff.str("");
+			buff << *attr_SCA5HT_read;
+			cmd += buff.str();
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA6LT") == 0){
+			DEBUG_STREAM <<"Write SCA6LT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=6";
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAL=";
+			buff.str("");
+			buff << *attr_SCA6LT_read;
+			cmd += buff.str();
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA6HT") == 0){
+			DEBUG_STREAM <<"Write SCA6HT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=6";
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAH=";
+			buff.str("");
+			buff << *attr_SCA6HT_read;
+			cmd += buff.str();
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA7LT") == 0){
+			DEBUG_STREAM <<"Write SCA7LT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=7";
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAL=";
+			buff.str("");
+			buff << *attr_SCA7LT_read;
+			cmd += buff.str();
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA7HT") == 0){
+			DEBUG_STREAM <<"Write SCA7HT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=7";
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAH=";
+			buff.str("");
+			buff << *attr_SCA7HT_read;
+			cmd += buff.str();
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA8LT") == 0){
+			DEBUG_STREAM <<"Write SCA8LT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=8";
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAL=";
+			buff.str("");
+			buff << *attr_SCA8LT_read;
+			cmd += buff.str();
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+		else if(att_name.compare("SCA8HT") == 0){
+			DEBUG_STREAM <<"Write SCA8HT" << endl;
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAI=8";
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+			count_cmd ++;
+			send_cmd->length(count_cmd);
+			cmd.clear();
+			cmd = "SCAH=";
+			buff.str("");
+			buff << *attr_SCA8HT_read;
+			cmd += buff.str();
+			DEBUG_STREAM << cmd <<endl;
+			(*send_cmd)[count_cmd-1] = CORBA::string_dup(cmd.c_str());
+		}
+
+	}
+
+	try{
+		this->set_text_configuration(send_cmd);
+		delete(send_cmd);
+		for (long i = 0; i < nr_attr; i++){
+			att_name = dev_attr->get_attr_by_ind(attr_list[i]).get_name();
+			if (att_name.compare("AuxOut1") == 0 ) {
+				Tango::WAttribute &att = dev_attr->get_w_attr_by_name("AuxOut1");
+				att.set_write_value(attr_AuxOut1_read);
+				this->push_change_event("AuxOut1", attr_AuxOut1_read);
+			}
+			else if (att_name.compare("AcquisitionTime") == 0 ){
+				Tango::WAttribute &att = dev_attr->get_w_attr_by_name("AcquisitionTime");
+				att.set_write_value(attr_AcquisitionTime_read);
+				this->push_change_event("AcquisitionTime",
+										attr_AcquisitionTime_read);
+			}
+			else if (att_name.compare("Clock") == 0 ){
+				Tango::WAttribute &att = dev_attr->get_w_attr_by_name("Clock");
+				att.set_write_value(attr_Clock_read);
+				this->push_change_event("Clock",attr_Clock_read);
+				this->update_flat_top_width();
+				this->update_peaking_time();
+			}
+			else if (att_name.compare("CoarseGain") == 0 ){
+				Tango::WAttribute &att = dev_attr->get_w_attr_by_name("CoarseGain");
+				att.set_write_value(attr_CoarseGain_read);
+				this->push_change_event("CoarseGain",attr_CoarseGain_read);
+				this->update_total_gain();
+			}
+			else if (att_name.compare("Con1") == 0 ){
+				Tango::WAttribute &att = dev_attr->get_w_attr_by_name("Con1");
+				att.set_write_value(attr_Con1_read);
+				this->push_change_event("Con1",attr_Con1_read);
+			}
+			else if (att_name.compare("FineGain") == 0 ){
+				Tango::WAttribute &att = dev_attr->get_w_attr_by_name("FineGain");
+				att.set_write_value(attr_FineGain_read);
+				this->push_change_event("FineGain",attr_FineGain_read);
+				this->update_total_gain();
+			}
+			else if (att_name.compare("FlatTopWidth") == 0 ){
+				Tango::WAttribute &att = dev_attr->get_w_attr_by_name("FlatTopWidth");
+				att.set_write_value(attr_FlatTopWidth_read);
+				this->push_change_event("FlatTopWidth",attr_FlatTopWidth_read);
+			}
+			else if (att_name.compare("MCAC") == 0 ){
+				Tango::WAttribute &att = dev_attr->get_w_attr_by_name("MCAC");
+				att.set_write_value(attr_MCAC_read);
+				this->push_change_event("MCAC",attr_MCAC_read);
+			}
+			else if (att_name.compare("PeakingTime") == 0 ){
+				Tango::WAttribute &att = dev_attr->get_w_attr_by_name("PeakingTime");
+				att.set_write_value(attr_PeakingTime_read);
+				this->push_change_event("PeakingTime",attr_PeakingTime_read);
+			}
+			else if (att_name.compare("PileupReject") == 0 ){
+				Tango::WAttribute &att = dev_attr->get_w_attr_by_name("PileupReject");
+				att.set_write_value(attr_PileupReject_read);
+				this->push_change_event("PileupReject",attr_PileupReject_read);
+			}
+			else if (att_name.compare("SCA1LT") == 0 ){
+				Tango::WAttribute &att = dev_attr->get_w_attr_by_name("SCA1LT");
+				att.set_write_value(attr_SCA1LT_read);
+				this->push_change_event("SCA1LT",attr_SCA1LT_read);
+			}
+			else if (att_name.compare("SCA1HT") == 0 ){
+				Tango::WAttribute &att = dev_attr->get_w_attr_by_name("SCA1HT");
+				att.set_write_value(attr_SCA1HT_read);
+				this->push_change_event("SCA1HT",attr_SCA1HT_read);
+			}
+			else if (att_name.compare("SCA2LT") == 0 ){
+				Tango::WAttribute &att = dev_attr->get_w_attr_by_name("SCA2LT");
+				att.set_write_value(attr_SCA2LT_read);
+				this->push_change_event("SCA2LT",attr_SCA2LT_read);
+			}
+			else if (att_name.compare("SCA2HT") == 0 ){
+				Tango::WAttribute &att = dev_attr->get_w_attr_by_name("SCA2HT");
+				att.set_write_value(attr_SCA2HT_read);
+				this->push_change_event("SCA2HT",attr_SCA2HT_read);
+			}
+			else if (att_name.compare("SCA3LT") == 0 ){
+				Tango::WAttribute &att = dev_attr->get_w_attr_by_name("SCA3LT");
+				att.set_write_value(attr_SCA3LT_read);
+				this->push_change_event("SCA3LT",attr_SCA3LT_read);
+			}
+			else if (att_name.compare("SCA3HT") == 0 ){
+				Tango::WAttribute &att = dev_attr->get_w_attr_by_name("SCA3HT");
+				att.set_write_value(attr_SCA3HT_read);
+				this->push_change_event("SCA3HT",attr_SCA3HT_read);
+			}
+			else if (att_name.compare("SCA4LT") == 0 ){
+				Tango::WAttribute &att = dev_attr->get_w_attr_by_name("SCA4LT");
+				att.set_write_value(attr_SCA4LT_read);
+				this->push_change_event("SCA4LT",attr_SCA4LT_read);
+			}
+			else if (att_name.compare("SCA4HT") == 0 ){
+				Tango::WAttribute &att = dev_attr->get_w_attr_by_name("SCA4HT");
+				att.set_write_value(attr_SCA4HT_read);
+				this->push_change_event("SCA4HT",attr_SCA4HT_read);
+			}
+			else if (att_name.compare("SCA5LT") == 0 ){
+				Tango::WAttribute &att = dev_attr->get_w_attr_by_name("SCA5LT");
+				att.set_write_value(attr_SCA5LT_read);
+				this->push_change_event("SCA5LT",attr_SCA5LT_read);
+			}
+			else if (att_name.compare("SCA5HT") == 0 ){
+				Tango::WAttribute &att = dev_attr->get_w_attr_by_name("SCA5HT");
+				att.set_write_value(attr_SCA5HT_read);
+				this->push_change_event("SCA5HT",attr_SCA5HT_read);
+			}
+			else if (att_name.compare("SCA6LT") == 0 ){
+				Tango::WAttribute &att = dev_attr->get_w_attr_by_name("SCA6LT");
+				att.set_write_value(attr_SCA6LT_read);
+				this->push_change_event("SCA6LT",attr_SCA6LT_read);
+			}
+			else if (att_name.compare("SCA6HT") == 0 ){
+				Tango::WAttribute &att = dev_attr->get_w_attr_by_name("SCA6HT");
+				att.set_write_value(attr_SCA6HT_read);
+				this->push_change_event("SCA6HT",attr_SCA6HT_read);
+			}
+			else if (att_name.compare("SCA7LT") == 0 ){
+				Tango::WAttribute &att = dev_attr->get_w_attr_by_name("SCA7LT");
+				att.set_write_value(attr_SCA7LT_read);
+				this->push_change_event("SCA7LT",attr_SCA7LT_read);
+			}
+			else if (att_name.compare("SCA7HT") == 0 ){
+				Tango::WAttribute &att = dev_attr->get_w_attr_by_name("SCA7HT");
+				att.set_write_value(attr_SCA7HT_read);
+				this->push_change_event("SCA7HT",attr_SCA7HT_read);
+			}
+			else if (att_name.compare("SCA8LT") == 0 ){
+				Tango::WAttribute &att = dev_attr->get_w_attr_by_name("SCA8LT");
+				att.set_write_value(attr_SCA8LT_read);
+				this->push_change_event("SCA8LT",attr_SCA8LT_read);
+			}
+			else if (att_name.compare("SCA8HT") == 0 ){
+				Tango::WAttribute &att = dev_attr->get_w_attr_by_name("SCA8HT");
+				att.set_write_value(attr_SCA8HT_read);
+				this->push_change_event("SCA8HT",attr_SCA8HT_read);
+			}
+		}
+	}
+	catch (...){
+
+		delete(send_cmd);
+	}
+
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_attr_hardware
+}
 
 //--------------------------------------------------------
 /**
- *	Read FastCount attribute
+ *	Read attribute AcquisitionTime related method
+ *	Description: It sets the preset acquisition time.
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_AcquisitionTime(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_AcquisitionTime(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_AcquisitionTime) ENABLED START -----*/
+        //      Set the attribute value
+        attr.set_value(attr_AcquisitionTime_read);
+
+        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_AcquisitionTime
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute AcquisitionTime related method
+ *	Description: It sets the preset acquisition time.
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_AcquisitionTime(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::write_AcquisitionTime(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(AmptekPX5::write_AcquisitionTime) ENABLED START -----*/
+	*attr_AcquisitionTime_read = w_val;
+
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_AcquisitionTime
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute AuxOut1 related method
+ *	Description: Auxiliary output 
+ *
+ *	Data type:	Tango::DevString
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_AuxOut1(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_AuxOut1(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_AuxOut1) ENABLED START -----*/
+	//	Set the attribute value
+	string result = this->read_parameter("AUO1");
+	*attr_AuxOut1_read = CORBA::string_dup(result.c_str());
+
+	attr.set_value(attr_AuxOut1_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_AuxOut1
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute AuxOut1 related method
+ *	Description: Auxiliary output 
+ *
+ *	Data type:	Tango::DevString
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_AuxOut1(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::write_AuxOut1(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevString	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(AmptekPX5::write_AuxOut1) ENABLED START -----*/
+	
+	*attr_AuxOut1_read = w_val;
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_AuxOut1
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute Clock related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevLong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_Clock(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_Clock(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_Clock) ENABLED START -----*/
+	//      Set the attribute value
+	attr.set_value(attr_Clock_read);
+
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_Clock
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute Clock related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevLong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_Clock(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::write_Clock(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevLong	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(AmptekPX5::write_Clock) ENABLED START -----*/
+
+	*attr_Clock_read = w_val;
+
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_Clock
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute CoarseGain related method
+ *	Description: It Selects the analog gain.
+ *
+ *	Data type:	Tango::DevShort
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_CoarseGain(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_CoarseGain(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_CoarseGain) ENABLED START -----*/
+	//      Set the attribute value
+	attr.set_value(attr_CoarseGain_read);
+
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_CoarseGain
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute CoarseGain related method
+ *	Description: It Selects the analog gain.
+ *
+ *	Data type:	Tango::DevShort
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_CoarseGain(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::write_CoarseGain(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevShort	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(AmptekPX5::write_CoarseGain) ENABLED START -----*/
+
+        //      Retrieve write value
+	*attr_CoarseGain_read = w_val;
+
+        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_CoarseGain
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute Con1 related method
+ *	Description: Connector 1 output
+ *
+ *	Data type:	Tango::DevString
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_Con1(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_Con1(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_Con1) ENABLED START -----*/
+	//	Set the attribute value
+	attr.set_value(attr_Con1_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_Con1
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute Con1 related method
+ *	Description: Connector 1 output
+ *
+ *	Data type:	Tango::DevString
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_Con1(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::write_Con1(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevString	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(AmptekPX5::write_Con1) ENABLED START -----*/
+	
+	*attr_Con1_read = w_val;
+
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_Con1
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute DeadTime related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_DeadTime(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_DeadTime(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_DeadTime) ENABLED START -----*/
+
+        //      Set the attribute value
+    if (attr_FastCount_read[0]>0)
+    {
+        attr_DeadTime_read[0] = (float((attr_FastCount_read[0] - attr_SlowCount_read[0]))/attr_FastCount_read[0]) * Tango::DevULong(100);
+        attr.set_value(attr_DeadTime_read);
+    }
+    else
+    {
+    attr_DeadTime_read[0] = 1000;
+    attr.set_value(attr_DeadTime_read);
+    }
+
+        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_DeadTime
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute FastCount related method
  *	Description: 
  *
  *	Data type:	Tango::DevULong
- *	Attr type:	Scalar 
+ *	Attr type:	Scalar
  */
 //--------------------------------------------------------
 void AmptekPX5::read_FastCount(Tango::Attribute &attr)
@@ -397,11 +1746,830 @@ void AmptekPX5::read_FastCount(Tango::Attribute &attr)
 }
 //--------------------------------------------------------
 /**
- *	Read SlowCount attribute
+ *	Read attribute FineGain related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_FineGain(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_FineGain(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_FineGain) ENABLED START -----*/
+
+	//      Set the attribute value
+	attr.set_value(attr_FineGain_read);
+
+        
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_FineGain
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute FineGain related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_FineGain(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::write_FineGain(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(AmptekPX5::write_FineGain) ENABLED START -----*/
+
+        //      Retrieve write value
+    *attr_FineGain_read = w_val;
+        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_FineGain
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute FlatTopWidth related method
+ *	Description: It selects the flat top width of the trapezoidal shaper. A flat top fo 0uS will result in a triangular shape, not trapezoidal.
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_FlatTopWidth(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_FlatTopWidth(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_FlatTopWidth) ENABLED START -----*/
+	//      Set the attribute value
+
+	attr.set_value(attr_FlatTopWidth_read);
+
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_FlatTopWidth
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute FlatTopWidth related method
+ *	Description: It selects the flat top width of the trapezoidal shaper. A flat top fo 0uS will result in a triangular shape, not trapezoidal.
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_FlatTopWidth(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::write_FlatTopWidth(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(AmptekPX5::write_FlatTopWidth) ENABLED START -----*/
+
+        //      Retrieve write value
+	*attr_FlatTopWidth_read = w_val;
+
+        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_FlatTopWidth
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute MCAC related method
  *	Description: 
  *
  *	Data type:	Tango::DevULong
- *	Attr type:	Scalar 
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_MCAC(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_MCAC(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_MCAC) ENABLED START -----*/
+        
+	//      Set the attribute value
+	attr.set_value(attr_MCAC_read);
+
+
+
+        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_MCAC
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute MCAC related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_MCAC(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::write_MCAC(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevULong	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(AmptekPX5::write_MCAC) ENABLED START -----*/
+        //      Retrieve write value
+    *attr_MCAC_read = w_val;
+        
+        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_MCAC
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute PeakingTime related method
+ *	Description: It selects the peaking time for the slow (shape) channel.
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_PeakingTime(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_PeakingTime(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_PeakingTime) ENABLED START -----*/
+          //      Set the attribute value
+        attr.set_value(attr_PeakingTime_read);
+
+        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_PeakingTime
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute PeakingTime related method
+ *	Description: It selects the peaking time for the slow (shape) channel.
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_PeakingTime(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::write_PeakingTime(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(AmptekPX5::write_PeakingTime) ENABLED START -----*/
+        
+	//      Retrieve write value
+	*attr_PeakingTime_read = w_val;
+	this->push_change_event("PeakingTime",&w_val);
+	this->update_flat_top_width();
+        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_PeakingTime
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute PileupReject related method
+ *	Description: It`s used to enable or disable Pile-up Rejection.
+ *
+ *	Data type:	Tango::DevString
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_PileupReject(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_PileupReject(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_PileupReject) ENABLED START -----*/
+
+                                                   //CORBA::string_dup(const_cast<char *>(confs[i].c_str()));
+        //      Set the attribute value
+        attr.set_value(attr_PileupReject_read);
+
+        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_PileupReject
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute PileupReject related method
+ *	Description: It`s used to enable or disable Pile-up Rejection.
+ *
+ *	Data type:	Tango::DevString
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_PileupReject(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::write_PileupReject(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevString	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(AmptekPX5::write_PileupReject) ENABLED START -----*/
+
+	//      Retrieve write value
+	*attr_PileupReject_read = w_val;
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_PileupReject
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute SCA1HT related method
+ *	Description: SCA1 High Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_SCA1HT(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_SCA1HT(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_SCA1HT) ENABLED START -----*/
+	//	Set the attribute value
+	attr.set_value(attr_SCA1HT_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_SCA1HT
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute SCA1HT related method
+ *	Description: SCA1 High Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_SCA1HT(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::write_SCA1HT(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevULong	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA1HT) ENABLED START -----*/
+	*attr_SCA1HT_read = w_val;
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA1HT
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute SCA1LT related method
+ *	Description: SCA1 Low Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_SCA1LT(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_SCA1LT(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_SCA1LT) ENABLED START -----*/
+	//	Set the attribute value
+	attr.set_value(attr_SCA1LT_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_SCA1LT
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute SCA1LT related method
+ *	Description: SCA1 Low Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_SCA1LT(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::write_SCA1LT(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevULong	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA1LT) ENABLED START -----*/
+	*attr_SCA1LT_read = w_val;
+
+	
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA1LT
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute SCA2HT related method
+ *	Description: SCA2 High Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_SCA2HT(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_SCA2HT(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_SCA2HT) ENABLED START -----*/
+	//	Set the attribute value
+	attr.set_value(attr_SCA2HT_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_SCA2HT
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute SCA2HT related method
+ *	Description: SCA2 High Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_SCA2HT(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::write_SCA2HT(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevULong	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA2HT) ENABLED START -----*/
+	*attr_SCA2HT_read = w_val;
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA2HT
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute SCA2LT related method
+ *	Description: SCA2 Low Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_SCA2LT(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_SCA2LT(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_SCA2LT) ENABLED START -----*/
+	//	Set the attribute value
+	attr.set_value(attr_SCA2LT_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_SCA2LT
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute SCA2LT related method
+ *	Description: SCA2 Low Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_SCA2LT(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::write_SCA2LT(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevULong	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA2LT) ENABLED START -----*/
+	*attr_SCA2LT_read = w_val;
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA2LT
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute SCA3HT related method
+ *	Description: SCA3 High Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_SCA3HT(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_SCA3HT(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_SCA3HT) ENABLED START -----*/
+	//	Set the attribute value
+	attr.set_value(attr_SCA3HT_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_SCA3HT
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute SCA3HT related method
+ *	Description: SCA3 High Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_SCA3HT(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::write_SCA3HT(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevULong	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA3HT) ENABLED START -----*/
+	*attr_SCA3HT_read = w_val;
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA3HT
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute SCA3LT related method
+ *	Description: SCA3 Low Threshold
+ *
+ *	Data type:	Tango::DevLong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_SCA3LT(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_SCA3LT(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_SCA3LT) ENABLED START -----*/
+	//	Set the attribute value
+	attr.set_value(attr_SCA3LT_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_SCA3LT
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute SCA3LT related method
+ *	Description: SCA3 Low Threshold
+ *
+ *	Data type:	Tango::DevLong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_SCA3LT(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::write_SCA3LT(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevLong	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA3LT) ENABLED START -----*/
+	*attr_SCA3LT_read = w_val;
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA3LT
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute SCA4HT related method
+ *	Description: SCA4 High Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_SCA4HT(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_SCA4HT(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_SCA4HT) ENABLED START -----*/
+	//	Set the attribute value
+	attr.set_value(attr_SCA4HT_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_SCA4HT
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute SCA4HT related method
+ *	Description: SCA4 High Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_SCA4HT(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::write_SCA4HT(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevULong	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA4HT) ENABLED START -----*/
+	*attr_SCA4HT_read = w_val;
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA4HT
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute SCA4LT related method
+ *	Description: SCA4 Low Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_SCA4LT(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_SCA4LT(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_SCA4LT) ENABLED START -----*/
+	//	Set the attribute value
+	attr.set_value(attr_SCA4LT_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_SCA4LT
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute SCA4LT related method
+ *	Description: SCA4 Low Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_SCA4LT(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::write_SCA4LT(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevULong	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA4LT) ENABLED START -----*/
+	 *attr_SCA4LT_read = w_val;
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA4LT
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute SCA5HT related method
+ *	Description: SCA5 High Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_SCA5HT(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_SCA5HT(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_SCA5HT) ENABLED START -----*/
+	//	Set the attribute value
+	attr.set_value(attr_SCA5HT_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_SCA5HT
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute SCA5HT related method
+ *	Description: SCA5 High Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_SCA5HT(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::write_SCA5HT(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevULong	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA5HT) ENABLED START -----*/
+	*attr_SCA5HT_read = w_val;
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA5HT
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute SCA5LT related method
+ *	Description: SCA5 Low Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_SCA5LT(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_SCA5LT(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_SCA5LT) ENABLED START -----*/
+	//	Set the attribute value
+	attr.set_value(attr_SCA5LT_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_SCA5LT
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute SCA5LT related method
+ *	Description: SCA5 Low Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_SCA5LT(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::write_SCA5LT(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevULong	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA5LT) ENABLED START -----*/
+	*attr_SCA5LT_read = w_val;
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA5LT
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute SCA6HT related method
+ *	Description: SCA6 High Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_SCA6HT(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_SCA6HT(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_SCA6HT) ENABLED START -----*/
+	//	Set the attribute value
+	attr.set_value(attr_SCA6HT_read);
+
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_SCA6HT
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute SCA6HT related method
+ *	Description: SCA6 High Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_SCA6HT(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::write_SCA6HT(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevULong	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA6HT) ENABLED START -----*/
+	*attr_SCA6HT_read = w_val;
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA6HT
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute SCA6LT related method
+ *	Description: SCA6 Low Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_SCA6LT(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_SCA6LT(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_SCA6LT) ENABLED START -----*/
+	//	Set the attribute value
+	attr.set_value(attr_SCA6LT_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_SCA6LT
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute SCA6LT related method
+ *	Description: SCA6 Low Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_SCA6LT(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::write_SCA6LT(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevULong	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA6LT) ENABLED START -----*/
+	*attr_SCA6LT_read = w_val;
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA6LT
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute SCA7HT related method
+ *	Description: SCA7 High Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_SCA7HT(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_SCA7HT(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_SCA7HT) ENABLED START -----*/
+	//	Set the attribute value
+
+	attr.set_value(attr_SCA7HT_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_SCA7HT
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute SCA7HT related method
+ *	Description: SCA7 High Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_SCA7HT(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::write_SCA7HT(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevULong	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA7HT) ENABLED START -----*/
+	*attr_SCA7HT_read = w_val;
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA7HT
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute SCA7LT related method
+ *	Description: SCA7 Low Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_SCA7LT(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_SCA7LT(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_SCA7LT) ENABLED START -----*/
+	//	Set the attribute value
+
+	attr.set_value(attr_SCA7LT_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_SCA7LT
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute SCA7LT related method
+ *	Description: SCA7 Low Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_SCA7LT(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::write_SCA7LT(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevULong	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA7LT) ENABLED START -----*/
+	*attr_SCA7LT_read = w_val;
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA7LT
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute SCA8HT related method
+ *	Description: SCA8 High Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_SCA8HT(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_SCA8HT(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_SCA8HT) ENABLED START -----*/
+	//	Set the attribute value
+
+	attr.set_value(attr_SCA8HT_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_SCA8HT
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute SCA8HT related method
+ *	Description: SCA8 High Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_SCA8HT(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::write_SCA8HT(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevULong	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA8HT) ENABLED START -----*/
+	*attr_SCA8HT_read = w_val;
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA8HT
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute SCA8LT related method
+ *	Description: SCA8 Low Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::read_SCA8LT(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::read_SCA8LT(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(AmptekPX5::read_SCA8LT) ENABLED START -----*/
+	//	Set the attribute value
+
+	attr.set_value(attr_SCA8LT_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_SCA8LT
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute SCA8LT related method
+ *	Description: SCA8 Low Threshold
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void AmptekPX5::write_SCA8LT(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "AmptekPX5::write_SCA8LT(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevULong	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA8LT) ENABLED START -----*/
+	*attr_SCA8LT_read = w_val;
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA8LT
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute SlowCount related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
  */
 //--------------------------------------------------------
 void AmptekPX5::read_SlowCount(Tango::Attribute &attr)
@@ -462,365 +2630,11 @@ void AmptekPX5::read_SlowCount(Tango::Attribute &attr)
 }
 //--------------------------------------------------------
 /**
- *	Read AcquisitionTime attribute
- *	Description: It sets the preset acquisition time.
- *
- *	Data type:	Tango::DevDouble
- *	Attr type:	Scalar 
- */
-//--------------------------------------------------------
-void AmptekPX5::read_AcquisitionTime(Tango::Attribute &attr)
-{
-	DEBUG_STREAM << "AmptekPX5::read_AcquisitionTime(Tango::Attribute &attr) entering... " << endl;
-	/*----- PROTECTED REGION ID(AmptekPX5::read_AcquisitionTime) ENABLED START -----*/
-
-        string result = this->read_parameter("PRET");
-        *attr_AcquisitionTime_read = atof(result.c_str());
-
-        //      Set the attribute value
-        attr.set_value(attr_AcquisitionTime_read);
-
-        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_AcquisitionTime
-}
-
-//--------------------------------------------------------
-/**
- *	Write AcquisitionTime attribute values to hardware.
- *
- *	Data type:	Tango::DevDouble
- *	Attr type:	Scalar 
- */
-//--------------------------------------------------------
-void AmptekPX5::write_AcquisitionTime(Tango::WAttribute &attr)
-{
-	DEBUG_STREAM << "AmptekPX5::write_AcquisitionTime(Tango::Attribute &attr) entering... " << endl;
-	
-	//	Retrieve write value
-	Tango::DevDouble	w_val;
-	attr.get_write_value(w_val);
-	
-	/*----- PROTECTED REGION ID(AmptekPX5::write_AcquisitionTime) ENABLED START -----*/
-
-        std::ostringstream buff;
-        buff << w_val;
-        this->write_parameter("PRET", buff.str());
-        this->push_change_event("AcquisitionTime",&w_val);
-
-        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_AcquisitionTime
-}
-
-//--------------------------------------------------------
-/**
- *	Read CoarseGain attribute
- *	Description: It Selects the analog gain.
- *
- *	Data type:	Tango::DevShort
- *	Attr type:	Scalar 
- */
-//--------------------------------------------------------
-void AmptekPX5::read_CoarseGain(Tango::Attribute &attr)
-{
-	DEBUG_STREAM << "AmptekPX5::read_CoarseGain(Tango::Attribute &attr) entering... " << endl;
-	/*----- PROTECTED REGION ID(AmptekPX5::read_CoarseGain) ENABLED START -----*/
-        
-        string result = this->read_parameter("GAIA");
-        *attr_CoarseGain_read = atoi(result.c_str());
-
-        //      Set the attribute value
-        attr.set_value(attr_CoarseGain_read);
-
-        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_CoarseGain
-}
-
-//--------------------------------------------------------
-/**
- *	Write CoarseGain attribute values to hardware.
- *
- *	Data type:	Tango::DevShort
- *	Attr type:	Scalar 
- */
-//--------------------------------------------------------
-void AmptekPX5::write_CoarseGain(Tango::WAttribute &attr)
-{
-	DEBUG_STREAM << "AmptekPX5::write_CoarseGain(Tango::Attribute &attr) entering... " << endl;
-	
-	//	Retrieve write value
-	Tango::DevShort	w_val;
-	attr.get_write_value(w_val);
-	
-	/*----- PROTECTED REGION ID(AmptekPX5::write_CoarseGain) ENABLED START -----*/
-
-        //      Retrieve write value
-        
-        std::ostringstream buff;
-        buff << w_val;
-        this->write_parameter("GAIA", buff.str());
-        this->push_change_event("CoarseGain",&w_val);
-        this->update_total_gain();
-        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_CoarseGain
-}
-
-//--------------------------------------------------------
-/**
- *	Read PileupReject attribute
- *	Description: It`s used to enable or disable Pile-up Rejection.
- *
- *	Data type:	Tango::DevString
- *	Attr type:	Scalar 
- */
-//--------------------------------------------------------
-void AmptekPX5::read_PileupReject(Tango::Attribute &attr)
-{
-	DEBUG_STREAM << "AmptekPX5::read_PileupReject(Tango::Attribute &attr) entering... " << endl;
-	/*----- PROTECTED REGION ID(AmptekPX5::read_PileupReject) ENABLED START -----*/
-
-        string result = this->read_parameter("PURE");
-        *attr_PileupReject_read = CORBA::string_dup(result.c_str());
-
-                                                    //CORBA::string_dup(const_cast<char *>(confs[i].c_str()));
-        //      Set the attribute value
-        attr.set_value(attr_PileupReject_read);
-
-        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_PileupReject
-}
-
-//--------------------------------------------------------
-/**
- *	Write PileupReject attribute values to hardware.
- *
- *	Data type:	Tango::DevString
- *	Attr type:	Scalar 
- */
-//--------------------------------------------------------
-void AmptekPX5::write_PileupReject(Tango::WAttribute &attr)
-{
-	DEBUG_STREAM << "AmptekPX5::write_PileupReject(Tango::Attribute &attr) entering... " << endl;
-	
-	//	Retrieve write value
-	Tango::DevString	w_val;
-	attr.get_write_value(w_val);
-	
-	/*----- PROTECTED REGION ID(AmptekPX5::write_PileupReject) ENABLED START -----*/
-
-        //      Retrieve write value
-        std::ostringstream buff;
-        buff << w_val;
-        this->write_parameter("PURE", buff.str());
-        this->push_change_event("PileupReject",&w_val);
-        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_PileupReject
-}
-
-//--------------------------------------------------------
-/**
- *	Read FlatTopWidth attribute
- *	Description: It selects the flat top width of the trapezoidal shaper. A flat top fo 0uS will result in a triangular shape, not trapezoidal.
- *
- *	Data type:	Tango::DevDouble
- *	Attr type:	Scalar 
- */
-//--------------------------------------------------------
-void AmptekPX5::read_FlatTopWidth(Tango::Attribute &attr)
-{
-	DEBUG_STREAM << "AmptekPX5::read_FlatTopWidth(Tango::Attribute &attr) entering... " << endl;
-	/*----- PROTECTED REGION ID(AmptekPX5::read_FlatTopWidth) ENABLED START -----*/
-
-        //      Set the attribute value
-        attr.set_value(attr_FlatTopWidth_read);
-        string result = this->read_parameter("TFLA");
-        *attr_FlatTopWidth_read = atof(result.c_str());
-        //      Set the attribute value
-        attr.set_value(attr_FlatTopWidth_read);
-
-        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_FlatTopWidth
-}
-
-//--------------------------------------------------------
-/**
- *	Write FlatTopWidth attribute values to hardware.
- *
- *	Data type:	Tango::DevDouble
- *	Attr type:	Scalar 
- */
-//--------------------------------------------------------
-void AmptekPX5::write_FlatTopWidth(Tango::WAttribute &attr)
-{
-	DEBUG_STREAM << "AmptekPX5::write_FlatTopWidth(Tango::Attribute &attr) entering... " << endl;
-	
-	//	Retrieve write value
-	Tango::DevDouble	w_val;
-	attr.get_write_value(w_val);
-	
-	/*----- PROTECTED REGION ID(AmptekPX5::write_FlatTopWidth) ENABLED START -----*/
-
-        //      Retrieve write value
-        std::ostringstream buff;
-        buff << w_val;
-        this->write_parameter("TFLA", buff.str());
-        this->push_change_event("FlatTopWidth",&w_val);
-
-        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_FlatTopWidth
-}
-
-//--------------------------------------------------------
-/**
- *	Read PeakingTime attribute
- *	Description: It selects the peaking time for the slow (shape) channel.
- *
- *	Data type:	Tango::DevDouble
- *	Attr type:	Scalar 
- */
-//--------------------------------------------------------
-void AmptekPX5::read_PeakingTime(Tango::Attribute &attr)
-{
-	DEBUG_STREAM << "AmptekPX5::read_PeakingTime(Tango::Attribute &attr) entering... " << endl;
-	/*----- PROTECTED REGION ID(AmptekPX5::read_PeakingTime) ENABLED START -----*/
-        
-        string result = this->read_parameter("TPEA");
-        *attr_PeakingTime_read = atof(result.c_str());
-
-        //      Set the attribute value
-        attr.set_value(attr_PeakingTime_read);
-
-        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_PeakingTime
-}
-
-//--------------------------------------------------------
-/**
- *	Write PeakingTime attribute values to hardware.
- *
- *	Data type:	Tango::DevDouble
- *	Attr type:	Scalar 
- */
-//--------------------------------------------------------
-void AmptekPX5::write_PeakingTime(Tango::WAttribute &attr)
-{
-	DEBUG_STREAM << "AmptekPX5::write_PeakingTime(Tango::Attribute &attr) entering... " << endl;
-	
-	//	Retrieve write value
-	Tango::DevDouble	w_val;
-	attr.get_write_value(w_val);
-	
-	/*----- PROTECTED REGION ID(AmptekPX5::write_PeakingTime) ENABLED START -----*/
-        
-        //      Retrieve write value
-        std::ostringstream buff;
-        
-        buff << w_val;
-        this->write_parameter("TPEA", buff.str());
-        this->push_change_event("PeakingTime",&w_val);
-        this->update_flat_top_width();
-        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_PeakingTime
-}
-
-//--------------------------------------------------------
-/**
- *	Read MCAC attribute
- *	Description: 
- *
- *	Data type:	Tango::DevULong
- *	Attr type:	Scalar 
- */
-//--------------------------------------------------------
-void AmptekPX5::read_MCAC(Tango::Attribute &attr)
-{
-	DEBUG_STREAM << "AmptekPX5::read_MCAC(Tango::Attribute &attr) entering... " << endl;
-	/*----- PROTECTED REGION ID(AmptekPX5::read_MCAC) ENABLED START -----*/
-        
-        string result = this->read_parameter("MCAC");
-        *attr_MCAC_read = atoi(result.c_str());
-        //      Set the attribute value
-        attr.set_value(attr_MCAC_read);
-
-
-
-        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_MCAC
-}
-
-//--------------------------------------------------------
-/**
- *	Write MCAC attribute values to hardware.
- *
- *	Data type:	Tango::DevULong
- *	Attr type:	Scalar 
- */
-//--------------------------------------------------------
-void AmptekPX5::write_MCAC(Tango::WAttribute &attr)
-{
-	DEBUG_STREAM << "AmptekPX5::write_MCAC(Tango::Attribute &attr) entering... " << endl;
-	
-	//	Retrieve write value
-	Tango::DevULong	w_val;
-	attr.get_write_value(w_val);
-	
-	/*----- PROTECTED REGION ID(AmptekPX5::write_MCAC) ENABLED START -----*/
-        //      Retrieve write value
-        std::ostringstream buff;
-        buff << w_val;
-        this->write_parameter("MCAC", buff.str());
-        this->push_change_event("MCAC",&w_val);
-        
-        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_MCAC
-}
-
-//--------------------------------------------------------
-/**
- *	Read FineGain attribute
+ *	Read attribute TotalGain related method
  *	Description: 
  *
  *	Data type:	Tango::DevDouble
- *	Attr type:	Scalar 
- */
-//--------------------------------------------------------
-void AmptekPX5::read_FineGain(Tango::Attribute &attr)
-{
-	DEBUG_STREAM << "AmptekPX5::read_FineGain(Tango::Attribute &attr) entering... " << endl;
-	/*----- PROTECTED REGION ID(AmptekPX5::read_FineGain) ENABLED START -----*/
-
-        string result = this->read_parameter("GAIF");
-        DEBUG_STREAM << result << endl;
-        *attr_FineGain_read = atof(result.c_str());
-
-        //      Set the attribute value
-        attr.set_value(attr_FineGain_read);
-
-        
-        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_FineGain
-}
-
-//--------------------------------------------------------
-/**
- *	Write FineGain attribute values to hardware.
- *
- *	Data type:	Tango::DevDouble
- *	Attr type:	Scalar 
- */
-//--------------------------------------------------------
-void AmptekPX5::write_FineGain(Tango::WAttribute &attr)
-{
-	DEBUG_STREAM << "AmptekPX5::write_FineGain(Tango::Attribute &attr) entering... " << endl;
-	
-	//	Retrieve write value
-	Tango::DevDouble	w_val;
-	attr.get_write_value(w_val);
-	
-	/*----- PROTECTED REGION ID(AmptekPX5::write_FineGain) ENABLED START -----*/
-
-        //      Retrieve write value
-        std::ostringstream buff;
-        buff << w_val;
-        this->write_parameter("GAIF", buff.str());
-        this->push_change_event("FineGain",&w_val);
-        this->update_total_gain();
-        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_FineGain
-}
-
-//--------------------------------------------------------
-/**
- *	Read TotalGain attribute
- *	Description: 
- *
- *	Data type:	Tango::DevDouble
- *	Attr type:	Scalar 
+ *	Attr type:	Scalar
  */
 //--------------------------------------------------------
 void AmptekPX5::read_TotalGain(Tango::Attribute &attr)
@@ -839,89 +2653,11 @@ void AmptekPX5::read_TotalGain(Tango::Attribute &attr)
 }
 //--------------------------------------------------------
 /**
- *	Read Clock attribute
- *	Description: 
- *
- *	Data type:	Tango::DevDouble
- *	Attr type:	Scalar 
- */
-//--------------------------------------------------------
-void AmptekPX5::read_Clock(Tango::Attribute &attr)
-{
-	DEBUG_STREAM << "AmptekPX5::read_Clock(Tango::Attribute &attr) entering... " << endl;
-	/*----- PROTECTED REGION ID(AmptekPX5::read_Clock) ENABLED START -----*/
-        string result = this->read_parameter("CLCK");
-        *attr_Clock_read = atoi(result.c_str());
-
-        //      Set the attribute value
-        attr.set_value(attr_Clock_read);
-
-        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_Clock
-}
-
-//--------------------------------------------------------
-/**
- *	Write Clock attribute values to hardware.
- *
- *	Data type:	Tango::DevDouble
- *	Attr type:	Scalar 
- */
-//--------------------------------------------------------
-void AmptekPX5::write_Clock(Tango::WAttribute &attr)
-{
-	DEBUG_STREAM << "AmptekPX5::write_Clock(Tango::Attribute &attr) entering... " << endl;
-	
-	//	Retrieve write value
-	Tango::DevDouble	w_val;
-	attr.get_write_value(w_val);
-	
-	/*----- PROTECTED REGION ID(AmptekPX5::write_Clock) ENABLED START -----*/
-
-        std::ostringstream buff;
-        buff << w_val;
-        this->write_parameter("CLCK", buff.str());
-        this->push_change_event("Clock",&w_val);
-        this->update_flat_top_width();
-        this->update_peaking_time();
-
-        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_Clock
-}
-
-//--------------------------------------------------------
-/**
- *	Read DeadTime attribute
- *	Description: 
- *
- *	Data type:	Tango::DevDouble
- *	Attr type:	Scalar 
- */
-//--------------------------------------------------------
-void AmptekPX5::read_DeadTime(Tango::Attribute &attr)
-{
-	DEBUG_STREAM << "AmptekPX5::read_DeadTime(Tango::Attribute &attr) entering... " << endl;
-	/*----- PROTECTED REGION ID(AmptekPX5::read_DeadTime) ENABLED START -----*/
-
-        //      Set the attribute value
-    if (attr_FastCount_read[0]>0)
-    {
-        attr_DeadTime_read[0] = (float((attr_FastCount_read[0] - attr_SlowCount_read[0]))/attr_FastCount_read[0]) * Tango::DevULong(100);
-        attr.set_value(attr_DeadTime_read);
-    }
-    else
-    {
-    attr_DeadTime_read[0] = 1000;
-    attr.set_value(attr_DeadTime_read);
-    }
-
-        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::read_DeadTime
-}
-//--------------------------------------------------------
-/**
- *	Read Spectrum attribute
+ *	Read attribute Spectrum related method
  *	Description: 
  *
  *	Data type:	Tango::DevULong
- *	Attr type:	Spectrum  max = 8192
+ *	Attr type:	Spectrum max = 8192
  */
 //--------------------------------------------------------
 void AmptekPX5::read_Spectrum(Tango::Attribute &attr)
@@ -986,33 +2722,25 @@ void AmptekPX5::read_Spectrum(Tango::Attribute &attr)
 
 //--------------------------------------------------------
 /**
- *	Method      : AmptekPX5::AmptekPX5Class::add_dynamic_attributes()
+ *	Method      : AmptekPX5::add_dynamic_attributes()
  *	Description : Create the dynamic attributes if any
- *	              for specified device.
+ *                for specified device.
  */
 //--------------------------------------------------------
 void AmptekPX5::add_dynamic_attributes()
 {
-	/*----- PROTECTED REGION ID(AmptekPX5::Class::add_dynamic_attributes) ENABLED START -----*/
-
+	/*----- PROTECTED REGION ID(AmptekPX5::add_dynamic_attributes) ENABLED START -----*/
+	
 	//	Add your own code to create and add dynamic attributes if any
-
-	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::Class::add_dynamic_attributes
-
+	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::add_dynamic_attributes
 }
-
-
-
-//========================================================
-//	Command execution methods
-//========================================================
 
 //--------------------------------------------------------
 /**
- *	Execute the State command:
+ *	Command State related method
  *	Description: This command gets the device state (stored in its device_state data member) and returns it to the caller.
  *
- *	@param argin none
  *	@returns Device state
  */
 //--------------------------------------------------------
@@ -1073,19 +2801,17 @@ Tango::DevState AmptekPX5::dev_state()
     delete responsePacket;
 
         /*----- PROTECTED REGION END -----*/	//	AmptekPX5::dev_state
-
-	set_state(argout);               // Give the state to Tango.
-	return DeviceImpl::dev_state();  // Return it after Tango management.
-
+	set_state(argout);    // Give the state to Tango.
+	if (argout!=Tango::ALARM)
+		DeviceImpl::dev_state();
+	return get_state();  // Return it after Tango management.
 }
-
 //--------------------------------------------------------
 /**
- *	Execute the SetTextConfiguration command:
+ *	Command SetTextConfiguration related method
  *	Description: 
  *
  *	@param argin 
- *	@returns 
  */
 //--------------------------------------------------------
 void AmptekPX5::set_text_configuration(const Tango::DevVarStringArray *argin)
@@ -1100,7 +2826,7 @@ void AmptekPX5::set_text_configuration(const Tango::DevVarStringArray *argin)
         //TODO: implement validation mechanism
         conf << (*argin)[i].in() << ";";
     }
-
+    DEBUG_STREAM << conf.str();
     Packet* requestPacket;
     Packet* responsePacket;
     requestPacket = new Packet(MIN_PACKET_LEN);
@@ -1147,12 +2873,10 @@ void AmptekPX5::set_text_configuration(const Tango::DevVarStringArray *argin)
     delete responsePacket; 
 
         /*----- PROTECTED REGION END -----*/	//	AmptekPX5::set_text_configuration
-
 }
-
 //--------------------------------------------------------
 /**
- *	Execute the GetTextConfiguration command:
+ *	Command GetTextConfiguration related method
  *	Description: 
  *
  *	@param argin 
@@ -1240,13 +2964,11 @@ Tango::DevVarStringArray *AmptekPX5::get_text_configuration(const Tango::DevVarS
     delete responsePacket; 
 
         /*----- PROTECTED REGION END -----*/	//	AmptekPX5::get_text_configuration
-
 	return argout;
 }
-
 //--------------------------------------------------------
 /**
- *	Execute the Echo command:
+ *	Command Echo related method
  *	Description: 
  *
  *	@param argin 
@@ -1310,17 +3032,13 @@ Tango::DevString AmptekPX5::echo(Tango::DevString argin)
     delete requestPacket;
     delete responsePacket;
         /*----- PROTECTED REGION END -----*/	//	AmptekPX5::echo
-
 	return argout;
 }
-
 //--------------------------------------------------------
 /**
- *	Execute the Enable command:
+ *	Command Enable related method
  *	Description: 
  *
- *	@param argin 
- *	@returns 
  */
 //--------------------------------------------------------
 void AmptekPX5::enable()
@@ -1367,16 +3085,12 @@ void AmptekPX5::enable()
     delete responsePacket;
 
         /*----- PROTECTED REGION END -----*/	//	AmptekPX5::enable
-
 }
-
 //--------------------------------------------------------
 /**
- *	Execute the Disable command:
+ *	Command Disable related method
  *	Description: 
  *
- *	@param argin 
- *	@returns 
  */
 //--------------------------------------------------------
 void AmptekPX5::disable()
@@ -1422,16 +3136,12 @@ void AmptekPX5::disable()
     delete responsePacket;
 
         /*----- PROTECTED REGION END -----*/	//	AmptekPX5::disable
-
 }
-
 //--------------------------------------------------------
 /**
- *	Execute the ClearSpectrum command:
+ *	Command ClearSpectrum related method
  *	Description: 
  *
- *	@param argin 
- *	@returns 
  */
 //--------------------------------------------------------
 void AmptekPX5::clear_spectrum()
@@ -1477,15 +3187,12 @@ void AmptekPX5::clear_spectrum()
     delete responsePacket;
 
         /*----- PROTECTED REGION END -----*/	//	AmptekPX5::clear_spectrum
-
 }
-
 //--------------------------------------------------------
 /**
- *	Execute the LatchGetClearSCA command:
+ *	Command LatchGetClearSCA related method
  *	Description: 
  *
- *	@param argin 
  *	@returns 
  */
 //--------------------------------------------------------
@@ -1562,17 +3269,13 @@ Tango::DevVarULongArray *AmptekPX5::latch_get_clear_sca()
     delete requestPacket;
     delete responsePacket;
         /*----- PROTECTED REGION END -----*/	//	AmptekPX5::latch_get_clear_sca
-
 	return argout;
 }
-
 //--------------------------------------------------------
 /**
- *	Execute the ClearInputBuffer command:
+ *	Command ClearInputBuffer related method
  *	Description: Clears the socket from any buffered incoming data.
  *
- *	@param argin 
- *	@returns 
  */
 //--------------------------------------------------------
 void AmptekPX5::clear_input_buffer()
@@ -1583,16 +3286,12 @@ void AmptekPX5::clear_input_buffer()
         //      Add your own code
     commHandler->clearInputBuffer();
         /*----- PROTECTED REGION END -----*/	//	AmptekPX5::clear_input_buffer
-
 }
-
 //--------------------------------------------------------
 /**
- *	Execute the AutoTune command:
+ *	Command AutoTune related method
  *	Description: This Command execute AutoTune Process
  *
- *	@param argin 
- *	@returns 
  */
 //--------------------------------------------------------
 void AmptekPX5::auto_tune()
@@ -1624,11 +3323,9 @@ void AmptekPX5::auto_tune()
     }
 
         /*----- PROTECTED REGION END -----*/	//	AmptekPX5::auto_tune
-
 }
 
-
-	/*----- PROTECTED REGION ID(AmptekPX5::namespace_ending) ENABLED START -----*/
+/*----- PROTECTED REGION ID(AmptekPX5::namespace_ending) ENABLED START -----*/
 
         //      Additional Methods
 //--------------------------------------------------------
@@ -1669,9 +3366,9 @@ std::string AmptekPX5::read_parameter(std::string cmd)
             static_cast<const char*> ("AmptekPX5::read_parameter()"));
         }
         delete(send_cmd);
+        delete(result);
         return argout;
 }  
-
 
 //--------------------------------------------------------
 /**
@@ -1938,8 +3635,5 @@ void* AmptekPX5::Auto_Tune_Thread(void *arg)
 
 
 
-
-
-
-        /*----- PROTECTED REGION END -----*/	//	AmptekPX5::namespace_ending
+/*----- PROTECTED REGION END -----*/	//	AmptekPX5::namespace_ending
 } //	namespace

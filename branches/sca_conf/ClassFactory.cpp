@@ -46,4 +46,4 @@ void Tango::DServer::class_factory()
 	add_class(AmptekPX5_ns::AmptekPX5Class::init("AmptekPX5"));
 }
 
-/*----- PROTECTED REGION END -----*/
+/*----- PROTECTED REGION END -----*/	//	AmptekPX5::ClassFactory.cpp
