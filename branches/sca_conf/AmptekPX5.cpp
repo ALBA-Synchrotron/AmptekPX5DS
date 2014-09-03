@@ -255,6 +255,23 @@ void AmptekPX5::init_device()
 	/*----- PROTECTED REGION ID(AmptekPX5::init_device) ENABLED START -----*/
 
         //      Initialize device
+	*attr_SCA1HT_read = 0;
+	*attr_SCA1LT_read = 0;
+	*attr_SCA2HT_read = 0;
+	*attr_SCA2LT_read = 0;
+	*attr_SCA3HT_read = 0;
+	*attr_SCA3LT_read = 0;
+	*attr_SCA4HT_read = 0;
+	*attr_SCA4LT_read = 0;
+	*attr_SCA5HT_read = 0;
+	*attr_SCA5LT_read = 0;
+	*attr_SCA6HT_read = 0;
+	*attr_SCA6LT_read = 0;
+	*attr_SCA7HT_read = 0;
+	*attr_SCA7LT_read = 0;
+	*attr_SCA8HT_read = 0;
+	*attr_SCA8LT_read = 0;
+
     try
     {
         commHandler = new AmptekCommHandler(hostname.c_str(), port, timeout, this);
@@ -881,6 +898,9 @@ void AmptekPX5::write_attr_hardware(TANGO_UNUSED(vector<long> &attr_list))
 	
 	//	Add your own code
 	long nr_attr = attr_list.size();
+	if (nr_attr == 0)
+		return;
+
 	Tango::DevVarStringArray *send_cmd;
 	send_cmd = new Tango::DevVarStringArray();
 	long count_cmd = 0;
@@ -1984,6 +2004,12 @@ void AmptekPX5::write_SCA1HT(Tango::WAttribute &attr)
 	Tango::DevULong	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA1HT) ENABLED START -----*/
+	if (w_val <= *attr_SCA1LT_read){
+        Tango::Except::throw_exception(
+        		static_cast<const char*> ("AMPTEK_ERROR"),
+        		static_cast<const char*> ("The High Threshold must be greater than the Low Threshold"),
+                static_cast<const char*> ("AmptekPX5::Auto_Tune_Thread()"));
+	}
 	*attr_SCA1HT_read = w_val;
 	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA1HT
 }
@@ -2021,6 +2047,13 @@ void AmptekPX5::write_SCA1LT(Tango::WAttribute &attr)
 	Tango::DevULong	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA1LT) ENABLED START -----*/
+	if (w_val >= *attr_SCA1HT_read){
+        Tango::Except::throw_exception(
+        		static_cast<const char*> ("AMPTEK_ERROR"),
+        		static_cast<const char*> ("The High Threshold must be lower than the Low Threshold"),
+                static_cast<const char*> ("AmptekPX5::Auto_Tune_Thread()"));
+	}
+
 	*attr_SCA1LT_read = w_val;
 
 	
@@ -2061,6 +2094,12 @@ void AmptekPX5::write_SCA2HT(Tango::WAttribute &attr)
 	Tango::DevULong	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA2HT) ENABLED START -----*/
+	if (w_val <= *attr_SCA2LT_read){
+        Tango::Except::throw_exception(
+        		static_cast<const char*> ("AMPTEK_ERROR"),
+        		static_cast<const char*> ("The High Threshold must be greater than the Low Threshold"),
+                static_cast<const char*> ("AmptekPX5::Auto_Tune_Thread()"));
+	}
 	*attr_SCA2HT_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA2HT
@@ -2099,6 +2138,12 @@ void AmptekPX5::write_SCA2LT(Tango::WAttribute &attr)
 	Tango::DevULong	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA2LT) ENABLED START -----*/
+	if (w_val >= *attr_SCA2HT_read){
+        Tango::Except::throw_exception(
+        		static_cast<const char*> ("AMPTEK_ERROR"),
+        		static_cast<const char*> ("The High Threshold must be lower than the Low Threshold"),
+                static_cast<const char*> ("AmptekPX5::Auto_Tune_Thread()"));
+	}
 	*attr_SCA2LT_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA2LT
@@ -2137,6 +2182,12 @@ void AmptekPX5::write_SCA3HT(Tango::WAttribute &attr)
 	Tango::DevULong	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA3HT) ENABLED START -----*/
+	if (w_val <= *attr_SCA3LT_read){
+        Tango::Except::throw_exception(
+        		static_cast<const char*> ("AMPTEK_ERROR"),
+        		static_cast<const char*> ("The High Threshold must be greater than the Low Threshold"),
+                static_cast<const char*> ("AmptekPX5::Auto_Tune_Thread()"));
+	}
 	*attr_SCA3HT_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA3HT
@@ -2175,6 +2226,12 @@ void AmptekPX5::write_SCA3LT(Tango::WAttribute &attr)
 	Tango::DevLong	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA3LT) ENABLED START -----*/
+	if (w_val >= *attr_SCA3HT_read){
+        Tango::Except::throw_exception(
+        		static_cast<const char*> ("AMPTEK_ERROR"),
+        		static_cast<const char*> ("The High Threshold must be lower than the Low Threshold"),
+                static_cast<const char*> ("AmptekPX5::Auto_Tune_Thread()"));
+	}
 	*attr_SCA3LT_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA3LT
@@ -2213,6 +2270,12 @@ void AmptekPX5::write_SCA4HT(Tango::WAttribute &attr)
 	Tango::DevULong	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA4HT) ENABLED START -----*/
+	if (w_val <= *attr_SCA4LT_read){
+        Tango::Except::throw_exception(
+        		static_cast<const char*> ("AMPTEK_ERROR"),
+        		static_cast<const char*> ("The High Threshold must be greater than the Low Threshold"),
+                static_cast<const char*> ("AmptekPX5::Auto_Tune_Thread()"));
+	}
 	*attr_SCA4HT_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA4HT
@@ -2251,7 +2314,14 @@ void AmptekPX5::write_SCA4LT(Tango::WAttribute &attr)
 	Tango::DevULong	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA4LT) ENABLED START -----*/
-	 *attr_SCA4LT_read = w_val;
+	if (w_val >= *attr_SCA4HT_read){
+        Tango::Except::throw_exception(
+        		static_cast<const char*> ("AMPTEK_ERROR"),
+        		static_cast<const char*> ("The High Threshold must be lower than the Low Threshold"),
+                static_cast<const char*> ("AmptekPX5::Auto_Tune_Thread()"));
+	}
+
+	*attr_SCA4LT_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA4LT
 }
@@ -2289,6 +2359,12 @@ void AmptekPX5::write_SCA5HT(Tango::WAttribute &attr)
 	Tango::DevULong	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA5HT) ENABLED START -----*/
+	if (w_val <= *attr_SCA5LT_read){
+        Tango::Except::throw_exception(
+        		static_cast<const char*> ("AMPTEK_ERROR"),
+        		static_cast<const char*> ("The High Threshold must be greater than the Low Threshold"),
+                static_cast<const char*> ("AmptekPX5::Auto_Tune_Thread()"));
+	}
 	*attr_SCA5HT_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA5HT
@@ -2327,6 +2403,12 @@ void AmptekPX5::write_SCA5LT(Tango::WAttribute &attr)
 	Tango::DevULong	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA5LT) ENABLED START -----*/
+	if (w_val >= *attr_SCA5HT_read){
+        Tango::Except::throw_exception(
+        		static_cast<const char*> ("AMPTEK_ERROR"),
+        		static_cast<const char*> ("The High Threshold must be lower than the Low Threshold"),
+                static_cast<const char*> ("AmptekPX5::Auto_Tune_Thread()"));
+	}
 	*attr_SCA5LT_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA5LT
@@ -2365,6 +2447,12 @@ void AmptekPX5::write_SCA6HT(Tango::WAttribute &attr)
 	Tango::DevULong	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA6HT) ENABLED START -----*/
+	if (w_val <= *attr_SCA6LT_read){
+        Tango::Except::throw_exception(
+        		static_cast<const char*> ("AMPTEK_ERROR"),
+        		static_cast<const char*> ("The High Threshold must be greater than the Low Threshold"),
+                static_cast<const char*> ("AmptekPX5::Auto_Tune_Thread()"));
+	}
 	*attr_SCA6HT_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA6HT
@@ -2403,6 +2491,12 @@ void AmptekPX5::write_SCA6LT(Tango::WAttribute &attr)
 	Tango::DevULong	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA6LT) ENABLED START -----*/
+	if (w_val >= *attr_SCA6HT_read){
+        Tango::Except::throw_exception(
+        		static_cast<const char*> ("AMPTEK_ERROR"),
+        		static_cast<const char*> ("The High Threshold must be lower than the Low Threshold"),
+                static_cast<const char*> ("AmptekPX5::Auto_Tune_Thread()"));
+	}
 	*attr_SCA6LT_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA6LT
@@ -2442,6 +2536,12 @@ void AmptekPX5::write_SCA7HT(Tango::WAttribute &attr)
 	Tango::DevULong	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA7HT) ENABLED START -----*/
+	if (w_val <= *attr_SCA7LT_read){
+        Tango::Except::throw_exception(
+        		static_cast<const char*> ("AMPTEK_ERROR"),
+        		static_cast<const char*> ("The High Threshold must be greater than the Low Threshold"),
+                static_cast<const char*> ("AmptekPX5::Auto_Tune_Thread()"));
+	}
 	*attr_SCA7HT_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA7HT
@@ -2481,6 +2581,12 @@ void AmptekPX5::write_SCA7LT(Tango::WAttribute &attr)
 	Tango::DevULong	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA7LT) ENABLED START -----*/
+	if (w_val >= *attr_SCA7HT_read){
+        Tango::Except::throw_exception(
+        		static_cast<const char*> ("AMPTEK_ERROR"),
+        		static_cast<const char*> ("The High Threshold must be lower than the Low Threshold"),
+                static_cast<const char*> ("AmptekPX5::Auto_Tune_Thread()"));
+	}
 	*attr_SCA7LT_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA7LT
@@ -2520,6 +2626,12 @@ void AmptekPX5::write_SCA8HT(Tango::WAttribute &attr)
 	Tango::DevULong	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA8HT) ENABLED START -----*/
+	if (w_val <= *attr_SCA8LT_read){
+        Tango::Except::throw_exception(
+        		static_cast<const char*> ("AMPTEK_ERROR"),
+        		static_cast<const char*> ("The High Threshold must be greater than the Low Threshold"),
+                static_cast<const char*> ("AmptekPX5::write_SCA8HT"));
+	}
 	*attr_SCA8HT_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA8HT
@@ -2559,6 +2671,12 @@ void AmptekPX5::write_SCA8LT(Tango::WAttribute &attr)
 	Tango::DevULong	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA8LT) ENABLED START -----*/
+	if (w_val >= *attr_SCA8HT_read){
+        Tango::Except::throw_exception(
+        		static_cast<const char*> ("AMPTEK_ERROR"),
+        		static_cast<const char*> ("The High Threshold must be lower than the Low Threshold"),
+                static_cast<const char*> ("AmptekPX5::write_SCA8LT"));
+	}
 	*attr_SCA8LT_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::write_SCA8LT
