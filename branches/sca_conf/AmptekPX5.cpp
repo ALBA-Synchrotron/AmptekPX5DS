@@ -91,7 +91,7 @@ static const char *RcsId = "$Id:  $";
 //  SCA2HT           |  Tango::DevULong	Scalar
 //  SCA2LT           |  Tango::DevULong	Scalar
 //  SCA3HT           |  Tango::DevULong	Scalar
-//  SCA3LT           |  Tango::DevLong	Scalar
+//  SCA3LT           |  Tango::DevULong	Scalar
 //  SCA4HT           |  Tango::DevULong	Scalar
 //  SCA4LT           |  Tango::DevULong	Scalar
 //  SCA5HT           |  Tango::DevULong	Scalar
@@ -237,7 +237,7 @@ void AmptekPX5::init_device()
 	attr_SCA2HT_read = new Tango::DevULong[1];
 	attr_SCA2LT_read = new Tango::DevULong[1];
 	attr_SCA3HT_read = new Tango::DevULong[1];
-	attr_SCA3LT_read = new Tango::DevLong[1];
+	attr_SCA3LT_read = new Tango::DevULong[1];
 	attr_SCA4HT_read = new Tango::DevULong[1];
 	attr_SCA4LT_read = new Tango::DevULong[1];
 	attr_SCA5HT_read = new Tango::DevULong[1];
@@ -715,7 +715,7 @@ void AmptekPX5::read_attr_hardware(TANGO_UNUSED(vector<long> &attr_list))
 		}
 	}
 	result = this->get_text_configuration(send_cmd);
-	for(long i=0; i< result->length(); i++ ){
+	for(unsigned long i=0; i< result->length(); i++ ){
 		argout = CORBA::string_dup((*result)[i]);
 		if(argout.find("AUO1")!=string::npos){
 			DEBUG_STREAM <<"Result of AuxOut1: " << argout << endl;
@@ -2197,7 +2197,7 @@ void AmptekPX5::write_SCA3HT(Tango::WAttribute &attr)
  *	Read attribute SCA3LT related method
  *	Description: SCA3 Low Threshold
  *
- *	Data type:	Tango::DevLong
+ *	Data type:	Tango::DevULong
  *	Attr type:	Scalar
  */
 //--------------------------------------------------------
@@ -2215,7 +2215,7 @@ void AmptekPX5::read_SCA3LT(Tango::Attribute &attr)
  *	Write attribute SCA3LT related method
  *	Description: SCA3 Low Threshold
  *
- *	Data type:	Tango::DevLong
+ *	Data type:	Tango::DevULong
  *	Attr type:	Scalar
  */
 //--------------------------------------------------------
@@ -2223,7 +2223,7 @@ void AmptekPX5::write_SCA3LT(Tango::WAttribute &attr)
 {
 	DEBUG_STREAM << "AmptekPX5::write_SCA3LT(Tango::WAttribute &attr) entering... " << endl;
 	//	Retrieve write value
-	Tango::DevLong	w_val;
+	Tango::DevULong	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(AmptekPX5::write_SCA3LT) ENABLED START -----*/
 	if (w_val >= *attr_SCA3HT_read){

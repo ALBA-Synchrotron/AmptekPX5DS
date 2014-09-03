@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ASCII"?>
 <pogoDsl:PogoSystem xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pogoDsl="http://www.esrf.fr/tango/pogo/PogoDsl">
   <classes name="AmptekPX5" pogoRevision="8.1">
-    <description description="Device server to control the MCA Amptek PX5. &#xA;The device server implements the communication by UDP socket. It can start and stop one acquisition and after read the Spectrum data. &#xA;In addition it exports some configuration attributes and a command to send ascii commands.&#xA; " title="AmptekPX5" sourcePath="/home/rhoms/workspace/AmptekPX5/branches/sca_conf" language="Cpp" filestogenerate="XMI   file,Code files" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false">
+    <description description="Device server to control the MCA Amptek PX5. &#xA;The device server implements the communication by UDP socket. It can start and stop one acquisition and after read the Spectrum data. &#xA;In addition it exports some configuration attributes and a command to send ascii commands.&#xA; " title="AmptekPX5" sourcePath="/home/rhoms/workspace/AmptekPX5/branches/sca_conf" language="Cpp" filestogenerate="XMI   file,Code files,html Pages" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false" descriptionHtmlExists="false">
       <inheritances classname="Device_Impl" sourcePath=""/>
       <identification contact="at cells.es - zreszela" author="zreszela" emailDomain="cells.es" classFamily="Acquisition" siteSpecific="" platform="Unix Like" bus="Ethernet" manufacturer="Amptek" reference="PX5"/>
     </description>
@@ -269,7 +269,7 @@
       <properties description="SCA3 High Threshold" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
     </attributes>
     <attributes name="SCA3LT" attType="Scalar" rwType="READ_WRITE" displayLevel="OPERATOR" polledPeriod="0" maxX="" maxY="" memorized="true" memorizedAtInit="true" allocReadMember="true" isDynamic="false">
-      <dataType xsi:type="pogoDsl:IntType"/>
+      <dataType xsi:type="pogoDsl:UIntType"/>
       <changeEvent fire="true" libCheckCriteria="true"/>
       <archiveEvent fire="false" libCheckCriteria="false"/>
       <dataReadyEvent fire="false" libCheckCriteria="true"/>
