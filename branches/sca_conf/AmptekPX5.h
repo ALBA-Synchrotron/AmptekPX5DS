@@ -87,7 +87,7 @@ public:
 	Tango::DevULong	*attr_SCA2HT_read;
 	Tango::DevULong	*attr_SCA2LT_read;
 	Tango::DevULong	*attr_SCA3HT_read;
-	Tango::DevLong	*attr_SCA3LT_read;
+	Tango::DevULong	*attr_SCA3LT_read;
 	Tango::DevULong	*attr_SCA4HT_read;
 	Tango::DevULong	*attr_SCA4LT_read;
 	Tango::DevULong	*attr_SCA5HT_read;
@@ -341,7 +341,7 @@ public:
  *	Attribute SCA3LT related methods
  *	Description: SCA3 Low Threshold
  *
- *	Data type:	Tango::DevLong
+ *	Data type:	Tango::DevULong
  *	Attr type:	Scalar
  */
 	virtual void read_SCA3LT(Tango::Attribute &attr);

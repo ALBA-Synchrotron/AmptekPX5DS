@@ -303,7 +303,7 @@ class SCA3LTAttrib: public Tango::Attr
 {
 public:
 	SCA3LTAttrib():Attr("SCA3LT",
-			Tango::DEV_LONG, Tango::READ_WRITE) {};
+			Tango::DEV_ULONG, Tango::READ_WRITE) {};
 	~SCA3LTAttrib() {};
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
 		{(static_cast<AmptekPX5 *>(dev))->read_SCA3LT(att);}
