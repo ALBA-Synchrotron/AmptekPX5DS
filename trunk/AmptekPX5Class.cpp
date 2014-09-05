@@ -11,7 +11,7 @@ static const char *HttpServer = "http://www.esrf.eu/computing/cs/tango/tango_doc
 // description : C++ source for the AmptekPX5Class. A singleton
 //               class derived from DeviceClass. It implements the
 //               command list and all properties and methods required
-//               by the «name» once per process.
+//               by the ï¿½nameï¿½ once per process.
 //
 // project :     AmptekPX5.
 //
@@ -35,7 +35,7 @@ static const char *HttpServer = "http://www.esrf.eu/computing/cs/tango/tango_doc
 
 #include <AmptekPX5Class.h>
 
-/*----- PROTECTED REGION END -----*/
+/*----- PROTECTED REGION END -----*/	//	AmptekPX5Class.cpp
 
 //-------------------------------------------------------------------
 /**
@@ -55,11 +55,8 @@ __declspec(dllexport)
 	}
 }
 
-
 namespace AmptekPX5_ns
 {
-
-
 //===================================================================
 //	Initialize pointer for singleton pattern
 //===================================================================
@@ -73,20 +70,18 @@ AmptekPX5Class *AmptekPX5Class::_instance = NULL;
  * @param s	The class name
  */
 //--------------------------------------------------------
-AmptekPX5Class::AmptekPX5Class(string &s):DeviceClass(s)
+AmptekPX5Class::AmptekPX5Class(string &s):Tango::DeviceClass(s)
 {
 	cout2 << "Entering AmptekPX5Class constructor" << endl;
 	set_default_property();
-	get_class_property();
 	write_class_property();
 
-	/*----- PROTECTED REGION ID(AmptekPX5::Class::constructor) ENABLED START -----*/
+	/*----- PROTECTED REGION ID(AmptekPX5Class::constructor) ENABLED START -----*/
 
-	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::Class::constructor
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5Class::constructor
 
 	cout2 << "Leaving AmptekPX5Class constructor" << endl;
 }
-
 
 //--------------------------------------------------------
 /**
@@ -96,9 +91,9 @@ AmptekPX5Class::AmptekPX5Class(string &s):DeviceClass(s)
 //--------------------------------------------------------
 AmptekPX5Class::~AmptekPX5Class()
 {
-	/*----- PROTECTED REGION ID(AmptekPX5::Class::destructor) ENABLED START -----*/
+	/*----- PROTECTED REGION ID(AmptekPX5Class::destructor) ENABLED START -----*/
 
-	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::Class::destructor
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5Class::destructor
 
 	_instance = NULL;
 }
@@ -122,7 +117,7 @@ AmptekPX5Class *AmptekPX5Class::init(const char *name)
 			string s(name);
 			_instance = new AmptekPX5Class(s);
 		}
-		catch (bad_alloc)
+		catch (bad_alloc &)
 		{
 			throw;
 		}		
@@ -149,7 +144,6 @@ AmptekPX5Class *AmptekPX5Class::instance()
 
 
 
-
 //===================================================================
 //	Command execution method calls
 //===================================================================
@@ -167,12 +161,12 @@ AmptekPX5Class *AmptekPX5Class::instance()
 CORBA::Any *SetTextConfigurationClass::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 {
 	cout2 << "SetTextConfigurationClass::execute(): arrived" << endl;
-
-	const Tango::DevVarStringArray	*argin;
+	const Tango::DevVarStringArray *argin;
 	extract(in_any, argin);
 	((static_cast<AmptekPX5 *>(device))->set_text_configuration(argin));
 	return new CORBA::Any();
 }
+
 //--------------------------------------------------------
 /**
  * method : 		GetTextConfigurationClass::execute()
@@ -187,11 +181,11 @@ CORBA::Any *SetTextConfigurationClass::execute(Tango::DeviceImpl *device, const 
 CORBA::Any *GetTextConfigurationClass::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 {
 	cout2 << "GetTextConfigurationClass::execute(): arrived" << endl;
-
-	const Tango::DevVarStringArray	*argin;
+	const Tango::DevVarStringArray *argin;
 	extract(in_any, argin);
 	return insert((static_cast<AmptekPX5 *>(device))->get_text_configuration(argin));
 }
+
 //--------------------------------------------------------
 /**
  * method : 		EchoClass::execute()
@@ -206,11 +200,11 @@ CORBA::Any *GetTextConfigurationClass::execute(Tango::DeviceImpl *device, const 
 CORBA::Any *EchoClass::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 {
 	cout2 << "EchoClass::execute(): arrived" << endl;
-
-	Tango::DevString	argin;
+	Tango::DevString argin;
 	extract(in_any, argin);
 	return insert((static_cast<AmptekPX5 *>(device))->echo(argin));
 }
+
 //--------------------------------------------------------
 /**
  * method : 		EnableClass::execute()
@@ -222,14 +216,13 @@ CORBA::Any *EchoClass::execute(Tango::DeviceImpl *device, const CORBA::Any &in_a
  *	returns The command output data (packed in the Any object)
  */
 //--------------------------------------------------------
-CORBA::Any *EnableClass::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *EnableClass::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	cout2 << "EnableClass::execute(): arrived" << endl;
-
-	
 	((static_cast<AmptekPX5 *>(device))->enable());
 	return new CORBA::Any();
 }
+
 //--------------------------------------------------------
 /**
  * method : 		DisableClass::execute()
@@ -241,14 +234,13 @@ CORBA::Any *EnableClass::execute(Tango::DeviceImpl *device, const CORBA::Any &in
  *	returns The command output data (packed in the Any object)
  */
 //--------------------------------------------------------
-CORBA::Any *DisableClass::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *DisableClass::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	cout2 << "DisableClass::execute(): arrived" << endl;
-
-	
 	((static_cast<AmptekPX5 *>(device))->disable());
 	return new CORBA::Any();
 }
+
 //--------------------------------------------------------
 /**
  * method : 		ClearSpectrumClass::execute()
@@ -260,14 +252,13 @@ CORBA::Any *DisableClass::execute(Tango::DeviceImpl *device, const CORBA::Any &i
  *	returns The command output data (packed in the Any object)
  */
 //--------------------------------------------------------
-CORBA::Any *ClearSpectrumClass::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *ClearSpectrumClass::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	cout2 << "ClearSpectrumClass::execute(): arrived" << endl;
-
-	
 	((static_cast<AmptekPX5 *>(device))->clear_spectrum());
 	return new CORBA::Any();
 }
+
 //--------------------------------------------------------
 /**
  * method : 		LatchGetClearSCAClass::execute()
@@ -279,13 +270,12 @@ CORBA::Any *ClearSpectrumClass::execute(Tango::DeviceImpl *device, const CORBA::
  *	returns The command output data (packed in the Any object)
  */
 //--------------------------------------------------------
-CORBA::Any *LatchGetClearSCAClass::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *LatchGetClearSCAClass::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	cout2 << "LatchGetClearSCAClass::execute(): arrived" << endl;
-
-	
 	return insert((static_cast<AmptekPX5 *>(device))->latch_get_clear_sca());
 }
+
 //--------------------------------------------------------
 /**
  * method : 		ClearInputBufferClass::execute()
@@ -297,14 +287,13 @@ CORBA::Any *LatchGetClearSCAClass::execute(Tango::DeviceImpl *device, const CORB
  *	returns The command output data (packed in the Any object)
  */
 //--------------------------------------------------------
-CORBA::Any *ClearInputBufferClass::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *ClearInputBufferClass::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	cout2 << "ClearInputBufferClass::execute(): arrived" << endl;
-
-	
 	((static_cast<AmptekPX5 *>(device))->clear_input_buffer());
 	return new CORBA::Any();
 }
+
 //--------------------------------------------------------
 /**
  * method : 		AutoTuneClass::execute()
@@ -316,28 +305,21 @@ CORBA::Any *ClearInputBufferClass::execute(Tango::DeviceImpl *device, const CORB
  *	returns The command output data (packed in the Any object)
  */
 //--------------------------------------------------------
-CORBA::Any *AutoTuneClass::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *AutoTuneClass::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	cout2 << "AutoTuneClass::execute(): arrived" << endl;
-
-	
 	((static_cast<AmptekPX5 *>(device))->auto_tune());
 	return new CORBA::Any();
 }
 
 
-
-
 //===================================================================
 //	Properties management
 //===================================================================
-
 //--------------------------------------------------------
 /**
- * method : 		AmptekPX5Class::get_class_property
- * description : 	Get the class property for specified name.
- *
- * @param	name  The property name
+ *	Method      : AmptekPX5Class::get_class_property()
+ *	Description : Get the class property for specified name.
  */
 //--------------------------------------------------------
 Tango::DbDatum AmptekPX5Class::get_class_property(string &prop_name)
@@ -349,10 +331,9 @@ Tango::DbDatum AmptekPX5Class::get_class_property(string &prop_name)
 	return Tango::DbDatum(prop_name);
 }
 
-
 //--------------------------------------------------------
 /**
- *	Method      : AmptekPX5::AmptekPX5Class::get_default_device_property()()
+ *	Method      : AmptekPX5Class::get_default_device_property()
  *	Description : Return the default value for device property.
  */
 //--------------------------------------------------------
@@ -365,10 +346,9 @@ Tango::DbDatum AmptekPX5Class::get_default_device_property(string &prop_name)
 	return Tango::DbDatum(prop_name);
 }
 
-
 //--------------------------------------------------------
 /**
- *	Method      : AmptekPX5::AmptekPX5Class::get_default_class_property()()
+ *	Method      : AmptekPX5Class::get_default_class_property()
  *	Description : Return the default value for class property.
  */
 //--------------------------------------------------------
@@ -384,22 +364,11 @@ Tango::DbDatum AmptekPX5Class::get_default_class_property(string &prop_name)
 
 //--------------------------------------------------------
 /**
- *	Method      : AmptekPX5::AmptekPX5Class::get_class_property()
- *	Description : //	Add your own code to initialize
- */
-//--------------------------------------------------------
-void AmptekPX5Class::get_class_property()
-{
-}
-
-
-//--------------------------------------------------------
-/**
- *	Method      : AmptekPX5::AmptekPX5Class::set_default_property()
+ *	Method      : AmptekPX5Class::set_default_property()
  *	Description : Set default property (class and device) for wizard.
- *	              For each property, add to wizard property name and description.
- *	              If default value has been set, add it to wizard property and.
- *	              store it in a DbDatum.
+ *                For each property, add to wizard property name and description.
+ *                If default value has been set, add it to wizard property and
+ *                store it in a DbDatum.
  */
 //--------------------------------------------------------
 void AmptekPX5Class::set_default_property()
@@ -408,11 +377,10 @@ void AmptekPX5Class::set_default_property()
 	string	prop_desc;
 	string	prop_def;
 	vector<string>	vect_data;
-	
+
 	//	Set Default Class Properties
 
-	//	Set Default Device Properties
-
+	//	Set Default device Properties
 	prop_name = "Hostname";
 	prop_desc = "Host name of PX5";
 	prop_def  = "";
@@ -426,10 +394,9 @@ void AmptekPX5Class::set_default_property()
 	}
 	else
 		add_wiz_dev_prop(prop_name, prop_desc);
-
 	prop_name = "Port";
 	prop_desc = "UDP port number";
-	prop_def  = "10001\n";
+	prop_def  = "10001";
 	vect_data.clear();
 	vect_data.push_back("10001");
 	if (prop_def.length()>0)
@@ -441,10 +408,9 @@ void AmptekPX5Class::set_default_property()
 	}
 	else
 		add_wiz_dev_prop(prop_name, prop_desc);
-
 	prop_name = "Timeout";
 	prop_desc = "socket timeout for receiving communication";
-	prop_def  = "1\n";
+	prop_def  = "1";
 	vect_data.clear();
 	vect_data.push_back("1");
 	if (prop_def.length()>0)
@@ -456,10 +422,9 @@ void AmptekPX5Class::set_default_property()
 	}
 	else
 		add_wiz_dev_prop(prop_name, prop_desc);
-
 	prop_name = "NrOfUdpAttempts";
 	prop_desc = "How many time udp request is repeated";
-	prop_def  = "2\n";
+	prop_def  = "2";
 	vect_data.clear();
 	vect_data.push_back("2");
 	if (prop_def.length()>0)
@@ -473,10 +438,9 @@ void AmptekPX5Class::set_default_property()
 		add_wiz_dev_prop(prop_name, prop_desc);
 }
 
-
 //--------------------------------------------------------
 /**
- *	Method      : AmptekPX5::AmptekPX5Class::write_class_property()
+ *	Method      : AmptekPX5Class::write_class_property()
  *	Description : Set class description fields as property in database
  */
 //--------------------------------------------------------
@@ -506,11 +470,11 @@ void AmptekPX5Class::write_class_property()
 	str_desc.push_back(" ");
 	description << str_desc;
 	data.push_back(description);
-		
+
 	//	put cvs or svn location
 	string	filename("AmptekPX5");
 	filename += "Class.cpp";
-	
+
 	// check for cvs information
 	string	src_path(CvsPath);
 	start = src_path.find("/");
@@ -533,6 +497,7 @@ void AmptekPX5Class::write_class_property()
 			data.push_back(cvs_loc);
 		}
 	}
+
 	// check for svn information
 	else
 	{
@@ -607,7 +572,7 @@ void AmptekPX5Class::write_class_property()
 	//  Put inheritance
 	Tango::DbDatum	inher_datum("InheritedFrom");
 	vector<string> inheritance;
-	inheritance.push_back("Device_Impl");
+	inheritance.push_back("TANGO_BASE_CLASS");
 	inher_datum << inheritance;
 	data.push_back(inher_datum);
 
@@ -615,31 +580,24 @@ void AmptekPX5Class::write_class_property()
 	get_db_class()->put_property(data);
 }
 
-
-
-
 //===================================================================
 //	Factory methods
 //===================================================================
 
-
 //--------------------------------------------------------
 /**
- * method : 		AmptekPX5Class::device_factory
- * description : 	Create the device object(s)
- *                  and store them in the device list
- *
- * @param	*devlist_ptr	The device name list
+ *	Method      : AmptekPX5Class::device_factory()
+ *	Description : Create the device object(s)
+ *                and store them in the device list
  */
 //--------------------------------------------------------
 void AmptekPX5Class::device_factory(const Tango::DevVarStringArray *devlist_ptr)
 {
-
-	/*----- PROTECTED REGION ID(AmptekPX5::Class::device_factory_before) ENABLED START -----*/
+	/*----- PROTECTED REGION ID(AmptekPX5Class::device_factory_before) ENABLED START -----*/
 
 	//	Add your own code
 
-	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::Class::device_factory_before
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5Class::device_factory_before
 
 	//	Create devices and add it into the device list
 	for (unsigned long i=0 ; i<devlist_ptr->length() ; i++)
@@ -665,112 +623,102 @@ void AmptekPX5Class::device_factory(const Tango::DevVarStringArray *devlist_ptr)
 			export_device(dev, dev->get_name().c_str());
 	}
 
-	/*----- PROTECTED REGION ID(AmptekPX5::Class::device_factory_after) ENABLED START -----*/
+	/*----- PROTECTED REGION ID(AmptekPX5Class::device_factory_after) ENABLED START -----*/
 
 	//	Add your own code
 
-	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::Class::device_factory_after
-
-	
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5Class::device_factory_after
 }
-
-
 //--------------------------------------------------------
 /**
- *	Method      : AmptekPX5::AmptekPX5Class::attribute_factory()
+ *	Method      : AmptekPX5Class::attribute_factory()
  *	Description : Create the attribute object(s)
- *	              and store them in the attribute list
+ *                and store them in the attribute list
  */
 //--------------------------------------------------------
 void AmptekPX5Class::attribute_factory(vector<Tango::Attr *> &att_list)
 {
-	/*----- PROTECTED REGION ID(AmptekPX5::Class::attribute_factory_before) ENABLED START -----*/
+	/*----- PROTECTED REGION ID(AmptekPX5Class::attribute_factory_before) ENABLED START -----*/
 
 	//	Add your own code
 
-	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::Class::attribute_factory_before
-
-
-	//	Attribute : FastCount
-	FastCountAttrib	*fastcount = new FastCountAttrib();
-	Tango::UserDefaultAttrProp	fastcount_prop;
-	//	description	not set for	FastCount
-	//	label	not set for	FastCount
-	//	unit	not set for	FastCount
-	//	standard_unit	not set for	FastCount
-	//	display_unit	not set for	FastCount
-	//	format	not set for	FastCount
-	//	max_value	not set for	FastCount
-	//	min_value	not set for	FastCount
-	//	max_alarm	not set for	FastCount
-	//	min_alarm	not set for	FastCount
-	//	max_warning	not set for	FastCount
-	//	min_warning	not set for	FastCount
-	//	delta_t	not set for	FastCount
-	//	delta_val	not set for	FastCount
-	fastcount->set_default_properties(fastcount_prop);
-	//	Not Polled
-	fastcount->set_disp_level(Tango::OPERATOR);
-	//	Not memorized
-
-	//	FastCount does not fire change event
-	//	FastCount does not fire archive event
-	//	FastCount does not fire data_ready event
-	att_list.push_back(fastcount);
-
-	//	Attribute : SlowCount
-	SlowCountAttrib	*slowcount = new SlowCountAttrib();
-	Tango::UserDefaultAttrProp	slowcount_prop;
-	//	description	not set for	SlowCount
-	//	label	not set for	SlowCount
-	//	unit	not set for	SlowCount
-	//	standard_unit	not set for	SlowCount
-	//	display_unit	not set for	SlowCount
-	//	format	not set for	SlowCount
-	//	max_value	not set for	SlowCount
-	//	min_value	not set for	SlowCount
-	//	max_alarm	not set for	SlowCount
-	//	min_alarm	not set for	SlowCount
-	//	max_warning	not set for	SlowCount
-	//	min_warning	not set for	SlowCount
-	//	delta_t	not set for	SlowCount
-	//	delta_val	not set for	SlowCount
-	slowcount->set_default_properties(slowcount_prop);
-	//	Not Polled
-	slowcount->set_disp_level(Tango::OPERATOR);
-	//	Not memorized
-
-	//	SlowCount does not fire change event
-	//	SlowCount does not fire archive event
-	//	SlowCount does not fire data_ready event
-	att_list.push_back(slowcount);
-
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5Class::attribute_factory_before
 	//	Attribute : AcquisitionTime
 	AcquisitionTimeAttrib	*acquisitiontime = new AcquisitionTimeAttrib();
 	Tango::UserDefaultAttrProp	acquisitiontime_prop;
 	acquisitiontime_prop.set_description("It sets the preset acquisition time.");
 	acquisitiontime_prop.set_label("AcquisitionTime");
 	acquisitiontime_prop.set_unit("s");
-	//	standard_unit	not set for	AcquisitionTime
-	//	display_unit	not set for	AcquisitionTime
-	//	format	not set for	AcquisitionTime
-	//	max_value	not set for	AcquisitionTime
-	//	min_value	not set for	AcquisitionTime
-	//	max_alarm	not set for	AcquisitionTime
-	//	min_alarm	not set for	AcquisitionTime
-	//	max_warning	not set for	AcquisitionTime
-	//	min_warning	not set for	AcquisitionTime
-	//	delta_t	not set for	AcquisitionTime
-	//	delta_val	not set for	AcquisitionTime
+	//	standard_unit	not set for AcquisitionTime
+	//	display_unit	not set for AcquisitionTime
+	//	format	not set for AcquisitionTime
+	//	max_value	not set for AcquisitionTime
+	//	min_value	not set for AcquisitionTime
+	//	max_alarm	not set for AcquisitionTime
+	//	min_alarm	not set for AcquisitionTime
+	//	max_warning	not set for AcquisitionTime
+	//	min_warning	not set for AcquisitionTime
+	//	delta_t	not set for AcquisitionTime
+	//	delta_val	not set for AcquisitionTime
+	
 	acquisitiontime->set_default_properties(acquisitiontime_prop);
 	//	Not Polled
 	acquisitiontime->set_disp_level(Tango::OPERATOR);
-	//	Not memorized
-
+	//	Not Memorized
 	acquisitiontime->set_change_event(true, true);
-	//	AcquisitionTime does not fire archive event
-	//	AcquisitionTime does not fire data_ready event
 	att_list.push_back(acquisitiontime);
+
+	//	Attribute : AuxOut1
+	AuxOut1Attrib	*auxout1 = new AuxOut1Attrib();
+	Tango::UserDefaultAttrProp	auxout1_prop;
+	auxout1_prop.set_description("Auxiliary output ");
+	//	label	not set for AuxOut1
+	//	unit	not set for AuxOut1
+	//	standard_unit	not set for AuxOut1
+	//	display_unit	not set for AuxOut1
+	//	format	not set for AuxOut1
+	//	max_value	not set for AuxOut1
+	//	min_value	not set for AuxOut1
+	//	max_alarm	not set for AuxOut1
+	//	min_alarm	not set for AuxOut1
+	//	max_warning	not set for AuxOut1
+	//	min_warning	not set for AuxOut1
+	//	delta_t	not set for AuxOut1
+	//	delta_val	not set for AuxOut1
+	
+	auxout1->set_default_properties(auxout1_prop);
+	//	Not Polled
+	auxout1->set_disp_level(Tango::OPERATOR);
+	auxout1->set_memorized();
+	auxout1->set_memorized_init(true);
+	auxout1->set_change_event(true, true);
+	att_list.push_back(auxout1);
+
+	//	Attribute : Clock
+	ClockAttrib	*clock = new ClockAttrib();
+	Tango::UserDefaultAttrProp	clock_prop;
+	//	description	not set for Clock
+	//	label	not set for Clock
+	//	unit	not set for Clock
+	//	standard_unit	not set for Clock
+	//	display_unit	not set for Clock
+	//	format	not set for Clock
+	//	max_value	not set for Clock
+	//	min_value	not set for Clock
+	//	max_alarm	not set for Clock
+	//	min_alarm	not set for Clock
+	//	max_warning	not set for Clock
+	//	min_warning	not set for Clock
+	//	delta_t	not set for Clock
+	//	delta_val	not set for Clock
+	
+	clock->set_default_properties(clock_prop);
+	//	Not Polled
+	clock->set_disp_level(Tango::OPERATOR);
+	clock->set_memorized();
+	clock->set_memorized_init(true);
+	clock->set_change_event(true, true);
+	att_list.push_back(clock);
 
 	//	Attribute : CoarseGain
 	CoarseGainAttrib	*coarsegain = new CoarseGainAttrib();
@@ -778,53 +726,125 @@ void AmptekPX5Class::attribute_factory(vector<Tango::Attr *> &att_list)
 	coarsegain_prop.set_description("It Selects the analog gain.");
 	coarsegain_prop.set_label("CoarseGain");
 	coarsegain_prop.set_unit("none");
-	//	standard_unit	not set for	CoarseGain
-	//	display_unit	not set for	CoarseGain
-	//	format	not set for	CoarseGain
-	//	max_value	not set for	CoarseGain
-	//	min_value	not set for	CoarseGain
-	//	max_alarm	not set for	CoarseGain
-	//	min_alarm	not set for	CoarseGain
-	//	max_warning	not set for	CoarseGain
-	//	min_warning	not set for	CoarseGain
-	//	delta_t	not set for	CoarseGain
-	//	delta_val	not set for	CoarseGain
+	//	standard_unit	not set for CoarseGain
+	//	display_unit	not set for CoarseGain
+	//	format	not set for CoarseGain
+	//	max_value	not set for CoarseGain
+	//	min_value	not set for CoarseGain
+	//	max_alarm	not set for CoarseGain
+	//	min_alarm	not set for CoarseGain
+	//	max_warning	not set for CoarseGain
+	//	min_warning	not set for CoarseGain
+	//	delta_t	not set for CoarseGain
+	//	delta_val	not set for CoarseGain
+	
 	coarsegain->set_default_properties(coarsegain_prop);
 	//	Not Polled
 	coarsegain->set_disp_level(Tango::OPERATOR);
-	//	Not memorized
-
+	coarsegain->set_memorized();
+	coarsegain->set_memorized_init(true);
 	coarsegain->set_change_event(true, true);
-	//	CoarseGain does not fire archive event
-	//	CoarseGain does not fire data_ready event
 	att_list.push_back(coarsegain);
 
-	//	Attribute : PileupReject
-	PileupRejectAttrib	*pileupreject = new PileupRejectAttrib();
-	Tango::UserDefaultAttrProp	pileupreject_prop;
-	pileupreject_prop.set_description("It`s used to enable or disable Pile-up Rejection.");
-	pileupreject_prop.set_label("PileupReject");
-	pileupreject_prop.set_unit("us");
-	//	standard_unit	not set for	PileupReject
-	//	display_unit	not set for	PileupReject
-	//	format	not set for	PileupReject
-	//	max_value	not set for	PileupReject
-	//	min_value	not set for	PileupReject
-	//	max_alarm	not set for	PileupReject
-	//	min_alarm	not set for	PileupReject
-	//	max_warning	not set for	PileupReject
-	//	min_warning	not set for	PileupReject
-	//	delta_t	not set for	PileupReject
-	//	delta_val	not set for	PileupReject
-	pileupreject->set_default_properties(pileupreject_prop);
+	//	Attribute : Con1
+	Con1Attrib	*con1 = new Con1Attrib();
+	Tango::UserDefaultAttrProp	con1_prop;
+	con1_prop.set_description("Connector 1 output");
+	//	label	not set for Con1
+	//	unit	not set for Con1
+	//	standard_unit	not set for Con1
+	//	display_unit	not set for Con1
+	//	format	not set for Con1
+	//	max_value	not set for Con1
+	//	min_value	not set for Con1
+	//	max_alarm	not set for Con1
+	//	min_alarm	not set for Con1
+	//	max_warning	not set for Con1
+	//	min_warning	not set for Con1
+	//	delta_t	not set for Con1
+	//	delta_val	not set for Con1
+	
+	con1->set_default_properties(con1_prop);
 	//	Not Polled
-	pileupreject->set_disp_level(Tango::OPERATOR);
-	//	Not memorized
+	con1->set_disp_level(Tango::OPERATOR);
+	con1->set_memorized();
+	con1->set_memorized_init(true);
+	con1->set_change_event(true, true);
+	att_list.push_back(con1);
 
-	pileupreject->set_change_event(true, true);
-	//	PileupReject does not fire archive event
-	//	PileupReject does not fire data_ready event
-	att_list.push_back(pileupreject);
+	//	Attribute : DeadTime
+	DeadTimeAttrib	*deadtime = new DeadTimeAttrib();
+	Tango::UserDefaultAttrProp	deadtime_prop;
+	//	description	not set for DeadTime
+	//	label	not set for DeadTime
+	//	unit	not set for DeadTime
+	//	standard_unit	not set for DeadTime
+	//	display_unit	not set for DeadTime
+	//	format	not set for DeadTime
+	//	max_value	not set for DeadTime
+	//	min_value	not set for DeadTime
+	//	max_alarm	not set for DeadTime
+	//	min_alarm	not set for DeadTime
+	//	max_warning	not set for DeadTime
+	//	min_warning	not set for DeadTime
+	//	delta_t	not set for DeadTime
+	//	delta_val	not set for DeadTime
+	
+	deadtime->set_default_properties(deadtime_prop);
+	//	Not Polled
+	deadtime->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(deadtime);
+
+	//	Attribute : FastCount
+	FastCountAttrib	*fastcount = new FastCountAttrib();
+	Tango::UserDefaultAttrProp	fastcount_prop;
+	//	description	not set for FastCount
+	//	label	not set for FastCount
+	//	unit	not set for FastCount
+	//	standard_unit	not set for FastCount
+	//	display_unit	not set for FastCount
+	//	format	not set for FastCount
+	//	max_value	not set for FastCount
+	//	min_value	not set for FastCount
+	//	max_alarm	not set for FastCount
+	//	min_alarm	not set for FastCount
+	//	max_warning	not set for FastCount
+	//	min_warning	not set for FastCount
+	//	delta_t	not set for FastCount
+	//	delta_val	not set for FastCount
+	
+	fastcount->set_default_properties(fastcount_prop);
+	//	Not Polled
+	fastcount->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(fastcount);
+
+	//	Attribute : FineGain
+	FineGainAttrib	*finegain = new FineGainAttrib();
+	Tango::UserDefaultAttrProp	finegain_prop;
+	//	description	not set for FineGain
+	finegain_prop.set_label("FineGain");
+	//	unit	not set for FineGain
+	//	standard_unit	not set for FineGain
+	//	display_unit	not set for FineGain
+	//	format	not set for FineGain
+	finegain_prop.set_max_value("1.999");
+	finegain_prop.set_min_value("0.5");
+	//	max_alarm	not set for FineGain
+	//	min_alarm	not set for FineGain
+	//	max_warning	not set for FineGain
+	//	min_warning	not set for FineGain
+	//	delta_t	not set for FineGain
+	//	delta_val	not set for FineGain
+	
+	finegain->set_default_properties(finegain_prop);
+	//	Not Polled
+	finegain->set_disp_level(Tango::OPERATOR);
+	finegain->set_memorized();
+	finegain->set_memorized_init(true);
+	finegain->set_change_event(true, true);
+	att_list.push_back(finegain);
 
 	//	Attribute : FlatTopWidth
 	FlatTopWidthAttrib	*flattopwidth = new FlatTopWidthAttrib();
@@ -832,26 +852,51 @@ void AmptekPX5Class::attribute_factory(vector<Tango::Attr *> &att_list)
 	flattopwidth_prop.set_description("It selects the flat top width of the trapezoidal shaper. A flat top fo 0uS will result in a triangular shape, not trapezoidal.");
 	flattopwidth_prop.set_label("FlatTopWidth");
 	flattopwidth_prop.set_unit("us");
-	//	standard_unit	not set for	FlatTopWidth
-	//	display_unit	not set for	FlatTopWidth
-	//	format	not set for	FlatTopWidth
-	//	max_value	not set for	FlatTopWidth
-	//	min_value	not set for	FlatTopWidth
-	//	max_alarm	not set for	FlatTopWidth
-	//	min_alarm	not set for	FlatTopWidth
-	//	max_warning	not set for	FlatTopWidth
-	//	min_warning	not set for	FlatTopWidth
-	//	delta_t	not set for	FlatTopWidth
-	//	delta_val	not set for	FlatTopWidth
+	//	standard_unit	not set for FlatTopWidth
+	//	display_unit	not set for FlatTopWidth
+	//	format	not set for FlatTopWidth
+	//	max_value	not set for FlatTopWidth
+	//	min_value	not set for FlatTopWidth
+	//	max_alarm	not set for FlatTopWidth
+	//	min_alarm	not set for FlatTopWidth
+	//	max_warning	not set for FlatTopWidth
+	//	min_warning	not set for FlatTopWidth
+	//	delta_t	not set for FlatTopWidth
+	//	delta_val	not set for FlatTopWidth
+	
 	flattopwidth->set_default_properties(flattopwidth_prop);
 	//	Not Polled
 	flattopwidth->set_disp_level(Tango::OPERATOR);
-	//	Not memorized
-
+	flattopwidth->set_memorized();
+	flattopwidth->set_memorized_init(true);
 	flattopwidth->set_change_event(true, true);
-	//	FlatTopWidth does not fire archive event
-	//	FlatTopWidth does not fire data_ready event
 	att_list.push_back(flattopwidth);
+
+	//	Attribute : MCAC
+	MCACAttrib	*mcac = new MCACAttrib();
+	Tango::UserDefaultAttrProp	mcac_prop;
+	//	description	not set for MCAC
+	mcac_prop.set_label("MCAC");
+	//	unit	not set for MCAC
+	//	standard_unit	not set for MCAC
+	//	display_unit	not set for MCAC
+	//	format	not set for MCAC
+	//	max_value	not set for MCAC
+	//	min_value	not set for MCAC
+	//	max_alarm	not set for MCAC
+	//	min_alarm	not set for MCAC
+	//	max_warning	not set for MCAC
+	//	min_warning	not set for MCAC
+	//	delta_t	not set for MCAC
+	//	delta_val	not set for MCAC
+	
+	mcac->set_default_properties(mcac_prop);
+	//	Not Polled
+	mcac->set_disp_level(Tango::OPERATOR);
+	mcac->set_memorized();
+	mcac->set_memorized_init(true);
+	mcac->set_change_event(true, true);
+	att_list.push_back(mcac);
 
 	//	Attribute : PeakingTime
 	PeakingTimeAttrib	*peakingtime = new PeakingTimeAttrib();
@@ -859,194 +904,544 @@ void AmptekPX5Class::attribute_factory(vector<Tango::Attr *> &att_list)
 	peakingtime_prop.set_description("It selects the peaking time for the slow (shape) channel.");
 	peakingtime_prop.set_label("PeakingTime");
 	peakingtime_prop.set_unit("us");
-	//	standard_unit	not set for	PeakingTime
-	//	display_unit	not set for	PeakingTime
-	//	format	not set for	PeakingTime
-	//	max_value	not set for	PeakingTime
-	//	min_value	not set for	PeakingTime
-	//	max_alarm	not set for	PeakingTime
-	//	min_alarm	not set for	PeakingTime
-	//	max_warning	not set for	PeakingTime
-	//	min_warning	not set for	PeakingTime
-	//	delta_t	not set for	PeakingTime
-	//	delta_val	not set for	PeakingTime
+	//	standard_unit	not set for PeakingTime
+	//	display_unit	not set for PeakingTime
+	//	format	not set for PeakingTime
+	//	max_value	not set for PeakingTime
+	//	min_value	not set for PeakingTime
+	//	max_alarm	not set for PeakingTime
+	//	min_alarm	not set for PeakingTime
+	//	max_warning	not set for PeakingTime
+	//	min_warning	not set for PeakingTime
+	//	delta_t	not set for PeakingTime
+	//	delta_val	not set for PeakingTime
+	
 	peakingtime->set_default_properties(peakingtime_prop);
 	//	Not Polled
 	peakingtime->set_disp_level(Tango::OPERATOR);
-	//	Not memorized
-
+	peakingtime->set_memorized();
+	peakingtime->set_memorized_init(true);
 	peakingtime->set_change_event(true, true);
-	//	PeakingTime does not fire archive event
-	//	PeakingTime does not fire data_ready event
 	att_list.push_back(peakingtime);
 
-	//	Attribute : MCAC
-	MCACAttrib	*mcac = new MCACAttrib();
-	Tango::UserDefaultAttrProp	mcac_prop;
-	//	description	not set for	MCAC
-	mcac_prop.set_label("MCAC");
-	//	unit	not set for	MCAC
-	//	standard_unit	not set for	MCAC
-	//	display_unit	not set for	MCAC
-	//	format	not set for	MCAC
-	//	max_value	not set for	MCAC
-	//	min_value	not set for	MCAC
-	//	max_alarm	not set for	MCAC
-	//	min_alarm	not set for	MCAC
-	//	max_warning	not set for	MCAC
-	//	min_warning	not set for	MCAC
-	//	delta_t	not set for	MCAC
-	//	delta_val	not set for	MCAC
-	mcac->set_default_properties(mcac_prop);
+	//	Attribute : PileupReject
+	PileupRejectAttrib	*pileupreject = new PileupRejectAttrib();
+	Tango::UserDefaultAttrProp	pileupreject_prop;
+	pileupreject_prop.set_description("It`s used to enable or disable Pile-up Rejection.");
+	pileupreject_prop.set_label("PileupReject");
+	pileupreject_prop.set_unit("us");
+	//	standard_unit	not set for PileupReject
+	//	display_unit	not set for PileupReject
+	//	format	not set for PileupReject
+	//	max_value	not set for PileupReject
+	//	min_value	not set for PileupReject
+	//	max_alarm	not set for PileupReject
+	//	min_alarm	not set for PileupReject
+	//	max_warning	not set for PileupReject
+	//	min_warning	not set for PileupReject
+	//	delta_t	not set for PileupReject
+	//	delta_val	not set for PileupReject
+	
+	pileupreject->set_default_properties(pileupreject_prop);
 	//	Not Polled
-	mcac->set_disp_level(Tango::OPERATOR);
-	//	Not memorized
+	pileupreject->set_disp_level(Tango::OPERATOR);
+	pileupreject->set_memorized();
+	pileupreject->set_memorized_init(true);
+	pileupreject->set_change_event(true, true);
+	att_list.push_back(pileupreject);
 
-	mcac->set_change_event(true, true);
-	//	MCAC does not fire archive event
-	//	MCAC does not fire data_ready event
-	att_list.push_back(mcac);
-
-	//	Attribute : FineGain
-	FineGainAttrib	*finegain = new FineGainAttrib();
-	Tango::UserDefaultAttrProp	finegain_prop;
-	//	description	not set for	FineGain
-	finegain_prop.set_label("FineGain");
-	//	unit	not set for	FineGain
-	//	standard_unit	not set for	FineGain
-	//	display_unit	not set for	FineGain
-	//	format	not set for	FineGain
-	finegain_prop.set_max_value("1.999");
-	finegain_prop.set_min_value("0.5");
-	//	max_alarm	not set for	FineGain
-	//	min_alarm	not set for	FineGain
-	//	max_warning	not set for	FineGain
-	//	min_warning	not set for	FineGain
-	//	delta_t	not set for	FineGain
-	//	delta_val	not set for	FineGain
-	finegain->set_default_properties(finegain_prop);
+	//	Attribute : SCA1HT
+	SCA1HTAttrib	*sca1ht = new SCA1HTAttrib();
+	Tango::UserDefaultAttrProp	sca1ht_prop;
+	sca1ht_prop.set_description("SCA1 High Threshold");
+	//	label	not set for SCA1HT
+	//	unit	not set for SCA1HT
+	//	standard_unit	not set for SCA1HT
+	//	display_unit	not set for SCA1HT
+	//	format	not set for SCA1HT
+	//	max_value	not set for SCA1HT
+	//	min_value	not set for SCA1HT
+	//	max_alarm	not set for SCA1HT
+	//	min_alarm	not set for SCA1HT
+	//	max_warning	not set for SCA1HT
+	//	min_warning	not set for SCA1HT
+	//	delta_t	not set for SCA1HT
+	//	delta_val	not set for SCA1HT
+	
+	sca1ht->set_default_properties(sca1ht_prop);
 	//	Not Polled
-	finegain->set_disp_level(Tango::OPERATOR);
-	//	Not memorized
+	sca1ht->set_disp_level(Tango::OPERATOR);
+	sca1ht->set_memorized();
+	sca1ht->set_memorized_init(true);
+	sca1ht->set_change_event(true, true);
+	att_list.push_back(sca1ht);
 
-	finegain->set_change_event(true, true);
-	//	FineGain does not fire archive event
-	//	FineGain does not fire data_ready event
-	att_list.push_back(finegain);
+	//	Attribute : SCA1LT
+	SCA1LTAttrib	*sca1lt = new SCA1LTAttrib();
+	Tango::UserDefaultAttrProp	sca1lt_prop;
+	sca1lt_prop.set_description("SCA1 Low Threshold");
+	//	label	not set for SCA1LT
+	//	unit	not set for SCA1LT
+	//	standard_unit	not set for SCA1LT
+	//	display_unit	not set for SCA1LT
+	//	format	not set for SCA1LT
+	//	max_value	not set for SCA1LT
+	//	min_value	not set for SCA1LT
+	//	max_alarm	not set for SCA1LT
+	//	min_alarm	not set for SCA1LT
+	//	max_warning	not set for SCA1LT
+	//	min_warning	not set for SCA1LT
+	//	delta_t	not set for SCA1LT
+	//	delta_val	not set for SCA1LT
+	
+	sca1lt->set_default_properties(sca1lt_prop);
+	//	Not Polled
+	sca1lt->set_disp_level(Tango::OPERATOR);
+	sca1lt->set_memorized();
+	sca1lt->set_memorized_init(true);
+	sca1lt->set_change_event(true, true);
+	att_list.push_back(sca1lt);
+
+	//	Attribute : SCA2HT
+	SCA2HTAttrib	*sca2ht = new SCA2HTAttrib();
+	Tango::UserDefaultAttrProp	sca2ht_prop;
+	sca2ht_prop.set_description("SCA2 High Threshold");
+	//	label	not set for SCA2HT
+	//	unit	not set for SCA2HT
+	//	standard_unit	not set for SCA2HT
+	//	display_unit	not set for SCA2HT
+	//	format	not set for SCA2HT
+	//	max_value	not set for SCA2HT
+	//	min_value	not set for SCA2HT
+	//	max_alarm	not set for SCA2HT
+	//	min_alarm	not set for SCA2HT
+	//	max_warning	not set for SCA2HT
+	//	min_warning	not set for SCA2HT
+	//	delta_t	not set for SCA2HT
+	//	delta_val	not set for SCA2HT
+	
+	sca2ht->set_default_properties(sca2ht_prop);
+	//	Not Polled
+	sca2ht->set_disp_level(Tango::OPERATOR);
+	sca2ht->set_memorized();
+	sca2ht->set_memorized_init(true);
+	sca2ht->set_change_event(true, true);
+	att_list.push_back(sca2ht);
+
+	//	Attribute : SCA2LT
+	SCA2LTAttrib	*sca2lt = new SCA2LTAttrib();
+	Tango::UserDefaultAttrProp	sca2lt_prop;
+	sca2lt_prop.set_description("SCA2 Low Threshold");
+	//	label	not set for SCA2LT
+	//	unit	not set for SCA2LT
+	//	standard_unit	not set for SCA2LT
+	//	display_unit	not set for SCA2LT
+	//	format	not set for SCA2LT
+	//	max_value	not set for SCA2LT
+	//	min_value	not set for SCA2LT
+	//	max_alarm	not set for SCA2LT
+	//	min_alarm	not set for SCA2LT
+	//	max_warning	not set for SCA2LT
+	//	min_warning	not set for SCA2LT
+	//	delta_t	not set for SCA2LT
+	//	delta_val	not set for SCA2LT
+	
+	sca2lt->set_default_properties(sca2lt_prop);
+	//	Not Polled
+	sca2lt->set_disp_level(Tango::OPERATOR);
+	sca2lt->set_memorized();
+	sca2lt->set_memorized_init(true);
+	sca2lt->set_change_event(true, true);
+	att_list.push_back(sca2lt);
+
+	//	Attribute : SCA3HT
+	SCA3HTAttrib	*sca3ht = new SCA3HTAttrib();
+	Tango::UserDefaultAttrProp	sca3ht_prop;
+	sca3ht_prop.set_description("SCA3 High Threshold");
+	//	label	not set for SCA3HT
+	//	unit	not set for SCA3HT
+	//	standard_unit	not set for SCA3HT
+	//	display_unit	not set for SCA3HT
+	//	format	not set for SCA3HT
+	//	max_value	not set for SCA3HT
+	//	min_value	not set for SCA3HT
+	//	max_alarm	not set for SCA3HT
+	//	min_alarm	not set for SCA3HT
+	//	max_warning	not set for SCA3HT
+	//	min_warning	not set for SCA3HT
+	//	delta_t	not set for SCA3HT
+	//	delta_val	not set for SCA3HT
+	
+	sca3ht->set_default_properties(sca3ht_prop);
+	//	Not Polled
+	sca3ht->set_disp_level(Tango::OPERATOR);
+	sca3ht->set_memorized();
+	sca3ht->set_memorized_init(true);
+	sca3ht->set_change_event(true, true);
+	att_list.push_back(sca3ht);
+
+	//	Attribute : SCA3LT
+	SCA3LTAttrib	*sca3lt = new SCA3LTAttrib();
+	Tango::UserDefaultAttrProp	sca3lt_prop;
+	sca3lt_prop.set_description("SCA3 Low Threshold");
+	//	label	not set for SCA3LT
+	//	unit	not set for SCA3LT
+	//	standard_unit	not set for SCA3LT
+	//	display_unit	not set for SCA3LT
+	//	format	not set for SCA3LT
+	//	max_value	not set for SCA3LT
+	//	min_value	not set for SCA3LT
+	//	max_alarm	not set for SCA3LT
+	//	min_alarm	not set for SCA3LT
+	//	max_warning	not set for SCA3LT
+	//	min_warning	not set for SCA3LT
+	//	delta_t	not set for SCA3LT
+	//	delta_val	not set for SCA3LT
+	
+	sca3lt->set_default_properties(sca3lt_prop);
+	//	Not Polled
+	sca3lt->set_disp_level(Tango::OPERATOR);
+	sca3lt->set_memorized();
+	sca3lt->set_memorized_init(true);
+	sca3lt->set_change_event(true, true);
+	att_list.push_back(sca3lt);
+
+	//	Attribute : SCA4HT
+	SCA4HTAttrib	*sca4ht = new SCA4HTAttrib();
+	Tango::UserDefaultAttrProp	sca4ht_prop;
+	sca4ht_prop.set_description("SCA4 High Threshold");
+	//	label	not set for SCA4HT
+	//	unit	not set for SCA4HT
+	//	standard_unit	not set for SCA4HT
+	//	display_unit	not set for SCA4HT
+	//	format	not set for SCA4HT
+	//	max_value	not set for SCA4HT
+	//	min_value	not set for SCA4HT
+	//	max_alarm	not set for SCA4HT
+	//	min_alarm	not set for SCA4HT
+	//	max_warning	not set for SCA4HT
+	//	min_warning	not set for SCA4HT
+	//	delta_t	not set for SCA4HT
+	//	delta_val	not set for SCA4HT
+	
+	sca4ht->set_default_properties(sca4ht_prop);
+	//	Not Polled
+	sca4ht->set_disp_level(Tango::OPERATOR);
+	sca4ht->set_memorized();
+	sca4ht->set_memorized_init(true);
+	sca4ht->set_change_event(true, true);
+	att_list.push_back(sca4ht);
+
+	//	Attribute : SCA4LT
+	SCA4LTAttrib	*sca4lt = new SCA4LTAttrib();
+	Tango::UserDefaultAttrProp	sca4lt_prop;
+	sca4lt_prop.set_description("SCA4 Low Threshold");
+	//	label	not set for SCA4LT
+	//	unit	not set for SCA4LT
+	//	standard_unit	not set for SCA4LT
+	//	display_unit	not set for SCA4LT
+	//	format	not set for SCA4LT
+	//	max_value	not set for SCA4LT
+	//	min_value	not set for SCA4LT
+	//	max_alarm	not set for SCA4LT
+	//	min_alarm	not set for SCA4LT
+	//	max_warning	not set for SCA4LT
+	//	min_warning	not set for SCA4LT
+	//	delta_t	not set for SCA4LT
+	//	delta_val	not set for SCA4LT
+	
+	sca4lt->set_default_properties(sca4lt_prop);
+	//	Not Polled
+	sca4lt->set_disp_level(Tango::OPERATOR);
+	sca4lt->set_memorized();
+	sca4lt->set_memorized_init(true);
+	sca4lt->set_change_event(true, true);
+	att_list.push_back(sca4lt);
+
+	//	Attribute : SCA5HT
+	SCA5HTAttrib	*sca5ht = new SCA5HTAttrib();
+	Tango::UserDefaultAttrProp	sca5ht_prop;
+	sca5ht_prop.set_description("SCA5 High Threshold");
+	//	label	not set for SCA5HT
+	//	unit	not set for SCA5HT
+	//	standard_unit	not set for SCA5HT
+	//	display_unit	not set for SCA5HT
+	//	format	not set for SCA5HT
+	//	max_value	not set for SCA5HT
+	//	min_value	not set for SCA5HT
+	//	max_alarm	not set for SCA5HT
+	//	min_alarm	not set for SCA5HT
+	//	max_warning	not set for SCA5HT
+	//	min_warning	not set for SCA5HT
+	//	delta_t	not set for SCA5HT
+	//	delta_val	not set for SCA5HT
+	
+	sca5ht->set_default_properties(sca5ht_prop);
+	//	Not Polled
+	sca5ht->set_disp_level(Tango::OPERATOR);
+	sca5ht->set_memorized();
+	sca5ht->set_memorized_init(true);
+	sca5ht->set_change_event(true, true);
+	att_list.push_back(sca5ht);
+
+	//	Attribute : SCA5LT
+	SCA5LTAttrib	*sca5lt = new SCA5LTAttrib();
+	Tango::UserDefaultAttrProp	sca5lt_prop;
+	sca5lt_prop.set_description("SCA5 Low Threshold");
+	//	label	not set for SCA5LT
+	//	unit	not set for SCA5LT
+	//	standard_unit	not set for SCA5LT
+	//	display_unit	not set for SCA5LT
+	//	format	not set for SCA5LT
+	//	max_value	not set for SCA5LT
+	//	min_value	not set for SCA5LT
+	//	max_alarm	not set for SCA5LT
+	//	min_alarm	not set for SCA5LT
+	//	max_warning	not set for SCA5LT
+	//	min_warning	not set for SCA5LT
+	//	delta_t	not set for SCA5LT
+	//	delta_val	not set for SCA5LT
+	
+	sca5lt->set_default_properties(sca5lt_prop);
+	//	Not Polled
+	sca5lt->set_disp_level(Tango::OPERATOR);
+	sca5lt->set_memorized();
+	sca5lt->set_memorized_init(true);
+	sca5lt->set_change_event(true, true);
+	att_list.push_back(sca5lt);
+
+	//	Attribute : SCA6HT
+	SCA6HTAttrib	*sca6ht = new SCA6HTAttrib();
+	Tango::UserDefaultAttrProp	sca6ht_prop;
+	sca6ht_prop.set_description("SCA6 High Threshold");
+	//	label	not set for SCA6HT
+	//	unit	not set for SCA6HT
+	//	standard_unit	not set for SCA6HT
+	//	display_unit	not set for SCA6HT
+	//	format	not set for SCA6HT
+	//	max_value	not set for SCA6HT
+	//	min_value	not set for SCA6HT
+	//	max_alarm	not set for SCA6HT
+	//	min_alarm	not set for SCA6HT
+	//	max_warning	not set for SCA6HT
+	//	min_warning	not set for SCA6HT
+	//	delta_t	not set for SCA6HT
+	//	delta_val	not set for SCA6HT
+	
+	sca6ht->set_default_properties(sca6ht_prop);
+	//	Not Polled
+	sca6ht->set_disp_level(Tango::OPERATOR);
+	sca6ht->set_memorized();
+	sca6ht->set_memorized_init(true);
+	sca6ht->set_change_event(true, true);
+	att_list.push_back(sca6ht);
+
+	//	Attribute : SCA6LT
+	SCA6LTAttrib	*sca6lt = new SCA6LTAttrib();
+	Tango::UserDefaultAttrProp	sca6lt_prop;
+	sca6lt_prop.set_description("SCA6 Low Threshold");
+	//	label	not set for SCA6LT
+	//	unit	not set for SCA6LT
+	//	standard_unit	not set for SCA6LT
+	//	display_unit	not set for SCA6LT
+	//	format	not set for SCA6LT
+	//	max_value	not set for SCA6LT
+	//	min_value	not set for SCA6LT
+	//	max_alarm	not set for SCA6LT
+	//	min_alarm	not set for SCA6LT
+	//	max_warning	not set for SCA6LT
+	//	min_warning	not set for SCA6LT
+	//	delta_t	not set for SCA6LT
+	//	delta_val	not set for SCA6LT
+	
+	sca6lt->set_default_properties(sca6lt_prop);
+	//	Not Polled
+	sca6lt->set_disp_level(Tango::OPERATOR);
+	sca6lt->set_memorized();
+	sca6lt->set_memorized_init(true);
+	sca6lt->set_change_event(true, true);
+	att_list.push_back(sca6lt);
+
+	//	Attribute : SCA7HT
+	SCA7HTAttrib	*sca7ht = new SCA7HTAttrib();
+	Tango::UserDefaultAttrProp	sca7ht_prop;
+	sca7ht_prop.set_description("SCA7 High Threshold");
+	//	label	not set for SCA7HT
+	//	unit	not set for SCA7HT
+	//	standard_unit	not set for SCA7HT
+	//	display_unit	not set for SCA7HT
+	//	format	not set for SCA7HT
+	//	max_value	not set for SCA7HT
+	//	min_value	not set for SCA7HT
+	//	max_alarm	not set for SCA7HT
+	//	min_alarm	not set for SCA7HT
+	//	max_warning	not set for SCA7HT
+	//	min_warning	not set for SCA7HT
+	//	delta_t	not set for SCA7HT
+	//	delta_val	not set for SCA7HT
+	
+	sca7ht->set_default_properties(sca7ht_prop);
+	//	Not Polled
+	sca7ht->set_disp_level(Tango::OPERATOR);
+	sca7ht->set_memorized();
+	sca7ht->set_memorized_init(true);
+	sca7ht->set_change_event(true, true);
+	att_list.push_back(sca7ht);
+
+	//	Attribute : SCA7LT
+	SCA7LTAttrib	*sca7lt = new SCA7LTAttrib();
+	Tango::UserDefaultAttrProp	sca7lt_prop;
+	sca7lt_prop.set_description("SCA7 Low Threshold");
+	//	label	not set for SCA7LT
+	//	unit	not set for SCA7LT
+	//	standard_unit	not set for SCA7LT
+	//	display_unit	not set for SCA7LT
+	//	format	not set for SCA7LT
+	//	max_value	not set for SCA7LT
+	//	min_value	not set for SCA7LT
+	//	max_alarm	not set for SCA7LT
+	//	min_alarm	not set for SCA7LT
+	//	max_warning	not set for SCA7LT
+	//	min_warning	not set for SCA7LT
+	//	delta_t	not set for SCA7LT
+	//	delta_val	not set for SCA7LT
+	
+	sca7lt->set_default_properties(sca7lt_prop);
+	//	Not Polled
+	sca7lt->set_disp_level(Tango::OPERATOR);
+	sca7lt->set_memorized();
+	sca7lt->set_memorized_init(true);
+	sca7lt->set_change_event(true, true);
+	att_list.push_back(sca7lt);
+
+	//	Attribute : SCA8HT
+	SCA8HTAttrib	*sca8ht = new SCA8HTAttrib();
+	Tango::UserDefaultAttrProp	sca8ht_prop;
+	sca8ht_prop.set_description("SCA8 High Threshold");
+	//	label	not set for SCA8HT
+	//	unit	not set for SCA8HT
+	//	standard_unit	not set for SCA8HT
+	//	display_unit	not set for SCA8HT
+	//	format	not set for SCA8HT
+	//	max_value	not set for SCA8HT
+	//	min_value	not set for SCA8HT
+	//	max_alarm	not set for SCA8HT
+	//	min_alarm	not set for SCA8HT
+	//	max_warning	not set for SCA8HT
+	//	min_warning	not set for SCA8HT
+	//	delta_t	not set for SCA8HT
+	//	delta_val	not set for SCA8HT
+	
+	sca8ht->set_default_properties(sca8ht_prop);
+	//	Not Polled
+	sca8ht->set_disp_level(Tango::OPERATOR);
+	sca8ht->set_memorized();
+	sca8ht->set_memorized_init(true);
+	sca8ht->set_change_event(true, true);
+	att_list.push_back(sca8ht);
+
+	//	Attribute : SCA8LT
+	SCA8LTAttrib	*sca8lt = new SCA8LTAttrib();
+	Tango::UserDefaultAttrProp	sca8lt_prop;
+	sca8lt_prop.set_description("SCA8 Low Threshold");
+	//	label	not set for SCA8LT
+	//	unit	not set for SCA8LT
+	//	standard_unit	not set for SCA8LT
+	//	display_unit	not set for SCA8LT
+	//	format	not set for SCA8LT
+	//	max_value	not set for SCA8LT
+	//	min_value	not set for SCA8LT
+	//	max_alarm	not set for SCA8LT
+	//	min_alarm	not set for SCA8LT
+	//	max_warning	not set for SCA8LT
+	//	min_warning	not set for SCA8LT
+	//	delta_t	not set for SCA8LT
+	//	delta_val	not set for SCA8LT
+	
+	sca8lt->set_default_properties(sca8lt_prop);
+	//	Not Polled
+	sca8lt->set_disp_level(Tango::OPERATOR);
+	sca8lt->set_memorized();
+	sca8lt->set_memorized_init(true);
+	sca8lt->set_change_event(true, true);
+	att_list.push_back(sca8lt);
+
+	//	Attribute : SlowCount
+	SlowCountAttrib	*slowcount = new SlowCountAttrib();
+	Tango::UserDefaultAttrProp	slowcount_prop;
+	//	description	not set for SlowCount
+	//	label	not set for SlowCount
+	//	unit	not set for SlowCount
+	//	standard_unit	not set for SlowCount
+	//	display_unit	not set for SlowCount
+	//	format	not set for SlowCount
+	//	max_value	not set for SlowCount
+	//	min_value	not set for SlowCount
+	//	max_alarm	not set for SlowCount
+	//	min_alarm	not set for SlowCount
+	//	max_warning	not set for SlowCount
+	//	min_warning	not set for SlowCount
+	//	delta_t	not set for SlowCount
+	//	delta_val	not set for SlowCount
+	
+	slowcount->set_default_properties(slowcount_prop);
+	//	Not Polled
+	slowcount->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(slowcount);
 
 	//	Attribute : TotalGain
 	TotalGainAttrib	*totalgain = new TotalGainAttrib();
 	Tango::UserDefaultAttrProp	totalgain_prop;
-	//	description	not set for	TotalGain
+	//	description	not set for TotalGain
 	totalgain_prop.set_label("TotalGain");
-	//	unit	not set for	TotalGain
-	//	standard_unit	not set for	TotalGain
-	//	display_unit	not set for	TotalGain
-	//	format	not set for	TotalGain
-	//	max_value	not set for	TotalGain
-	//	min_value	not set for	TotalGain
-	//	max_alarm	not set for	TotalGain
-	//	min_alarm	not set for	TotalGain
-	//	max_warning	not set for	TotalGain
-	//	min_warning	not set for	TotalGain
-	//	delta_t	not set for	TotalGain
-	//	delta_val	not set for	TotalGain
+	//	unit	not set for TotalGain
+	//	standard_unit	not set for TotalGain
+	//	display_unit	not set for TotalGain
+	//	format	not set for TotalGain
+	//	max_value	not set for TotalGain
+	//	min_value	not set for TotalGain
+	//	max_alarm	not set for TotalGain
+	//	min_alarm	not set for TotalGain
+	//	max_warning	not set for TotalGain
+	//	min_warning	not set for TotalGain
+	//	delta_t	not set for TotalGain
+	//	delta_val	not set for TotalGain
+	
 	totalgain->set_default_properties(totalgain_prop);
 	//	Not Polled
 	totalgain->set_disp_level(Tango::OPERATOR);
-	//	Not memorized
-
+	//	Not Memorized
 	totalgain->set_change_event(true, true);
-	//	TotalGain does not fire archive event
-	//	TotalGain does not fire data_ready event
 	att_list.push_back(totalgain);
-
-	//	Attribute : Clock
-	ClockAttrib	*clock = new ClockAttrib();
-	Tango::UserDefaultAttrProp	clock_prop;
-	//	description	not set for	Clock
-	//	label	not set for	Clock
-	//	unit	not set for	Clock
-	//	standard_unit	not set for	Clock
-	//	display_unit	not set for	Clock
-	//	format	not set for	Clock
-	//	max_value	not set for	Clock
-	//	min_value	not set for	Clock
-	//	max_alarm	not set for	Clock
-	//	min_alarm	not set for	Clock
-	//	max_warning	not set for	Clock
-	//	min_warning	not set for	Clock
-	//	delta_t	not set for	Clock
-	//	delta_val	not set for	Clock
-	clock->set_default_properties(clock_prop);
-	//	Not Polled
-	clock->set_disp_level(Tango::OPERATOR);
-	//	Not memorized
-
-	clock->set_change_event(true, true);
-	//	Clock does not fire archive event
-	//	Clock does not fire data_ready event
-	att_list.push_back(clock);
-
-	//	Attribute : DeadTime
-	DeadTimeAttrib	*deadtime = new DeadTimeAttrib();
-	Tango::UserDefaultAttrProp	deadtime_prop;
-	//	description	not set for	DeadTime
-	//	label	not set for	DeadTime
-	//	unit	not set for	DeadTime
-	//	standard_unit	not set for	DeadTime
-	//	display_unit	not set for	DeadTime
-	//	format	not set for	DeadTime
-	//	max_value	not set for	DeadTime
-	//	min_value	not set for	DeadTime
-	//	max_alarm	not set for	DeadTime
-	//	min_alarm	not set for	DeadTime
-	//	max_warning	not set for	DeadTime
-	//	min_warning	not set for	DeadTime
-	//	delta_t	not set for	DeadTime
-	//	delta_val	not set for	DeadTime
-	deadtime->set_default_properties(deadtime_prop);
-	//	Not Polled
-	deadtime->set_disp_level(Tango::OPERATOR);
-	//	Not memorized
-
-	//	DeadTime does not fire change event
-	//	DeadTime does not fire archive event
-	//	DeadTime does not fire data_ready event
-	att_list.push_back(deadtime);
 
 	//	Attribute : Spectrum
 	SpectrumAttrib	*spectrum = new SpectrumAttrib();
 	Tango::UserDefaultAttrProp	spectrum_prop;
-	//	description	not set for	Spectrum
-	//	label	not set for	Spectrum
-	//	unit	not set for	Spectrum
-	//	standard_unit	not set for	Spectrum
-	//	display_unit	not set for	Spectrum
-	//	format	not set for	Spectrum
-	//	max_value	not set for	Spectrum
-	//	min_value	not set for	Spectrum
-	//	max_alarm	not set for	Spectrum
-	//	min_alarm	not set for	Spectrum
-	//	max_warning	not set for	Spectrum
-	//	min_warning	not set for	Spectrum
-	//	delta_t	not set for	Spectrum
-	//	delta_val	not set for	Spectrum
+	//	description	not set for Spectrum
+	//	label	not set for Spectrum
+	//	unit	not set for Spectrum
+	//	standard_unit	not set for Spectrum
+	//	display_unit	not set for Spectrum
+	//	format	not set for Spectrum
+	//	max_value	not set for Spectrum
+	//	min_value	not set for Spectrum
+	//	max_alarm	not set for Spectrum
+	//	min_alarm	not set for Spectrum
+	//	max_warning	not set for Spectrum
+	//	min_warning	not set for Spectrum
+	//	delta_t	not set for Spectrum
+	//	delta_val	not set for Spectrum
+	
 	spectrum->set_default_properties(spectrum_prop);
 	//	Not Polled
 	spectrum->set_disp_level(Tango::OPERATOR);
-	//	Not memorized
-
-	//	Spectrum does not fire change event
-	//	Spectrum does not fire archive event
-	//	Spectrum does not fire data_ready event
+	//	Not Memorized
 	att_list.push_back(spectrum);
-
 
 	//	Create a list of static attributes
 	create_static_attribute_list(get_class_attr()->get_attr_list());
-
-	/*----- PROTECTED REGION ID(AmptekPX5::Class::attribute_factory_after) ENABLED START -----*/
+	/*----- PROTECTED REGION ID(AmptekPX5Class::attribute_factory_after) ENABLED START -----*/
 
 	//	Add your own code
 	acquisitiontime->set_change_event(true, false);
@@ -1059,24 +1454,23 @@ void AmptekPX5Class::attribute_factory(vector<Tango::Attr *> &att_list)
 	totalgain->set_change_event(true, false);
 	clock->set_change_event(true, false);
 	
-	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::Class::attribute_factory_after
-
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5Class::attribute_factory_after
 }
-
-
 //--------------------------------------------------------
 /**
- *	Method      : AmptekPX5::AmptekPX5Class::command_factory()
+ *	Method      : AmptekPX5Class::command_factory()
  *	Description : Create the command object(s)
- *	              and store them in the command list
+ *                and store them in the command list
  */
 //--------------------------------------------------------
 void AmptekPX5Class::command_factory()
 {
-	/*----- PROTECTED REGION ID(AmptekPX5::Class::command_factory_before) ENABLED START -----*/
+	/*----- PROTECTED REGION ID(AmptekPX5Class::command_factory_before) ENABLED START -----*/
 
-	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::Class::command_factory_before
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5Class::command_factory_before
 
+
+	//	Command SetTextConfiguration
 	SetTextConfigurationClass	*pSetTextConfigurationCmd =
 		new SetTextConfigurationClass("SetTextConfiguration",
 			Tango::DEVVAR_STRINGARRAY, Tango::DEV_VOID,
@@ -1084,6 +1478,8 @@ void AmptekPX5Class::command_factory()
 			"",
 			Tango::OPERATOR);
 	command_list.push_back(pSetTextConfigurationCmd);
+
+	//	Command GetTextConfiguration
 	GetTextConfigurationClass	*pGetTextConfigurationCmd =
 		new GetTextConfigurationClass("GetTextConfiguration",
 			Tango::DEVVAR_STRINGARRAY, Tango::DEVVAR_STRINGARRAY,
@@ -1091,6 +1487,8 @@ void AmptekPX5Class::command_factory()
 			"",
 			Tango::OPERATOR);
 	command_list.push_back(pGetTextConfigurationCmd);
+
+	//	Command Echo
 	EchoClass	*pEchoCmd =
 		new EchoClass("Echo",
 			Tango::DEV_STRING, Tango::DEV_STRING,
@@ -1098,6 +1496,8 @@ void AmptekPX5Class::command_factory()
 			"",
 			Tango::OPERATOR);
 	command_list.push_back(pEchoCmd);
+
+	//	Command Enable
 	EnableClass	*pEnableCmd =
 		new EnableClass("Enable",
 			Tango::DEV_VOID, Tango::DEV_VOID,
@@ -1105,6 +1505,8 @@ void AmptekPX5Class::command_factory()
 			"",
 			Tango::OPERATOR);
 	command_list.push_back(pEnableCmd);
+
+	//	Command Disable
 	DisableClass	*pDisableCmd =
 		new DisableClass("Disable",
 			Tango::DEV_VOID, Tango::DEV_VOID,
@@ -1112,6 +1514,8 @@ void AmptekPX5Class::command_factory()
 			"",
 			Tango::OPERATOR);
 	command_list.push_back(pDisableCmd);
+
+	//	Command ClearSpectrum
 	ClearSpectrumClass	*pClearSpectrumCmd =
 		new ClearSpectrumClass("ClearSpectrum",
 			Tango::DEV_VOID, Tango::DEV_VOID,
@@ -1119,6 +1523,8 @@ void AmptekPX5Class::command_factory()
 			"",
 			Tango::OPERATOR);
 	command_list.push_back(pClearSpectrumCmd);
+
+	//	Command LatchGetClearSCA
 	LatchGetClearSCAClass	*pLatchGetClearSCACmd =
 		new LatchGetClearSCAClass("LatchGetClearSCA",
 			Tango::DEV_VOID, Tango::DEVVAR_ULONGARRAY,
@@ -1126,6 +1532,8 @@ void AmptekPX5Class::command_factory()
 			"",
 			Tango::OPERATOR);
 	command_list.push_back(pLatchGetClearSCACmd);
+
+	//	Command ClearInputBuffer
 	ClearInputBufferClass	*pClearInputBufferCmd =
 		new ClearInputBufferClass("ClearInputBuffer",
 			Tango::DEV_VOID, Tango::DEV_VOID,
@@ -1133,6 +1541,8 @@ void AmptekPX5Class::command_factory()
 			"",
 			Tango::OPERATOR);
 	command_list.push_back(pClearInputBufferCmd);
+
+	//	Command AutoTune
 	AutoTuneClass	*pAutoTuneCmd =
 		new AutoTuneClass("AutoTune",
 			Tango::DEV_VOID, Tango::DEV_VOID,
@@ -1141,19 +1551,14 @@ void AmptekPX5Class::command_factory()
 			Tango::OPERATOR);
 	command_list.push_back(pAutoTuneCmd);
 
-	/*----- PROTECTED REGION ID(AmptekPX5::Class::command_factory_after) ENABLED START -----*/
+	/*----- PROTECTED REGION ID(AmptekPX5Class::command_factory_after) ENABLED START -----*/
 
-	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::Class::command_factory_after
-
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5Class::command_factory_after
 }
-
-
-
 
 //===================================================================
 //	Dynamic attributes related methods
 //===================================================================
-
 
 //--------------------------------------------------------
 /**
@@ -1174,11 +1579,9 @@ void AmptekPX5Class::create_static_attribute_list(vector<Tango::Attr *> &att_lis
 
 	cout2 << defaultAttList.size() << " attributes in default list" << endl;
 
+	/*----- PROTECTED REGION ID(AmptekPX5Class::create_static_att_list) ENABLED START -----*/
 
-	/*----- PROTECTED REGION ID(AmptekPX5::Class::create_static_att_list) ENABLED START -----*/
-
-	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::Class::create_static_att_list
-
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5Class::create_static_att_list
 }
 
 
@@ -1212,21 +1615,34 @@ void AmptekPX5Class::erase_dynamic_attributes(const Tango::DevVarStringArray *de
 			{
 				cout2 << att_name << " is a UNWANTED dynamic attribute for device " << (*devlist_ptr)[i] << endl;
 				Tango::Attribute &att = dev->get_device_attr()->get_attr_by_name(att_name.c_str());
-				dev->remove_attribute(att_list[att.get_attr_idx()],true);
+				dev->remove_attribute(att_list[att.get_attr_idx()], true, false);
 				--ite_att;
 			}
 		}
 	}
-	/*----- PROTECTED REGION ID(AmptekPX5::Class::erase_dynamic_attributes) ENABLED START -----*/
+	/*----- PROTECTED REGION ID(AmptekPX5Class::erase_dynamic_attributes) ENABLED START -----*/
 
-	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::Class::erase_dynamic_attributes
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5Class::erase_dynamic_attributes
+}
 
+//--------------------------------------------------------
+/**
+ *	Method      : AmptekPX5Class::get_attr_by_name()
+ *	Description : returns Tango::Attr * object found by name
+ */
+//--------------------------------------------------------
+Tango::Attr *AmptekPX5Class::get_attr_object_by_name(vector<Tango::Attr *> &att_list, string attname)
+{
+	vector<Tango::Attr *>::iterator it;
+	for (it=att_list.begin() ; it<att_list.end() ; it++)
+		if ((*it)->get_name()==attname)
+			return (*it);
+	//	Attr does not exist
+	return NULL;
 }
 
 
+/*----- PROTECTED REGION ID(AmptekPX5Class::Additional Methods) ENABLED START -----*/
 
-	/*----- PROTECTED REGION ID(AmptekPX5::Class::Additional Methods) ENABLED START -----*/
-
-	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::Class::Additional Methods
-
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5Class::Additional Methods
 } //	namespace

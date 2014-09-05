@@ -35,55 +35,25 @@
 #include <tango.h>
 #include <AmptekPX5.h>
 
-/*----- PROTECTED REGION END -----*/
+/*----- PROTECTED REGION END -----*/	//	AmptekPX5Class.h
+
 
 namespace AmptekPX5_ns
 {
-	/*----- PROTECTED REGION ID(AmptekPX5::classes for dynamic creation) ENABLED START -----*/
+/*----- PROTECTED REGION ID(AmptekPX5Class::classes for dynamic creation) ENABLED START -----*/
 
-	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::classes for dynamic creation
-
-
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5Class::classes for dynamic creation
 
 //=========================================
 //	Define classes for attributes
 //=========================================
-//	Attribute FastCount class definition
-class FastCountAttrib: public Tango::Attr
-{
-public:
-	FastCountAttrib():Attr("FastCount",
-	                   Tango::DEV_ULONG, Tango::READ) {};
-	~FastCountAttrib() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-		{(static_cast<AmptekPX5 *>(dev))->read_FastCount(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-		{return (static_cast<AmptekPX5 *>(dev))->is_FastCount_allowed(ty);}
-};
-
-//	Attribute SlowCount class definition
-class SlowCountAttrib: public Tango::Attr
-{
-public:
-	SlowCountAttrib():Attr("SlowCount",
-	                   Tango::DEV_ULONG, Tango::READ) {};
-	~SlowCountAttrib() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-		{(static_cast<AmptekPX5 *>(dev))->read_SlowCount(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-		{return (static_cast<AmptekPX5 *>(dev))->is_SlowCount_allowed(ty);}
-};
-
 //	Attribute AcquisitionTime class definition
 class AcquisitionTimeAttrib: public Tango::Attr
 {
 public:
 	AcquisitionTimeAttrib():Attr("AcquisitionTime",
-	                   Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
+			Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
 	~AcquisitionTimeAttrib() {};
-	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
 		{(static_cast<AmptekPX5 *>(dev))->read_AcquisitionTime(att);}
 	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
@@ -92,114 +62,19 @@ public:
 		{return (static_cast<AmptekPX5 *>(dev))->is_AcquisitionTime_allowed(ty);}
 };
 
-//	Attribute CoarseGain class definition
-class CoarseGainAttrib: public Tango::Attr
+//	Attribute AuxOut1 class definition
+class AuxOut1Attrib: public Tango::Attr
 {
 public:
-	CoarseGainAttrib():Attr("CoarseGain",
-	                   Tango::DEV_SHORT, Tango::READ_WRITE) {};
-	~CoarseGainAttrib() {};
-	
+	AuxOut1Attrib():Attr("AuxOut1",
+			Tango::DEV_STRING, Tango::READ_WRITE) {};
+	~AuxOut1Attrib() {};
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-		{(static_cast<AmptekPX5 *>(dev))->read_CoarseGain(att);}
+		{(static_cast<AmptekPX5 *>(dev))->read_AuxOut1(att);}
 	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-		{(static_cast<AmptekPX5 *>(dev))->write_CoarseGain(att);}
+		{(static_cast<AmptekPX5 *>(dev))->write_AuxOut1(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-		{return (static_cast<AmptekPX5 *>(dev))->is_CoarseGain_allowed(ty);}
-};
-
-//	Attribute PileupReject class definition
-class PileupRejectAttrib: public Tango::Attr
-{
-public:
-	PileupRejectAttrib():Attr("PileupReject",
-	                   Tango::DEV_STRING, Tango::READ_WRITE) {};
-	~PileupRejectAttrib() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-		{(static_cast<AmptekPX5 *>(dev))->read_PileupReject(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-		{(static_cast<AmptekPX5 *>(dev))->write_PileupReject(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-		{return (static_cast<AmptekPX5 *>(dev))->is_PileupReject_allowed(ty);}
-};
-
-//	Attribute FlatTopWidth class definition
-class FlatTopWidthAttrib: public Tango::Attr
-{
-public:
-	FlatTopWidthAttrib():Attr("FlatTopWidth",
-	                   Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
-	~FlatTopWidthAttrib() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-		{(static_cast<AmptekPX5 *>(dev))->read_FlatTopWidth(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-		{(static_cast<AmptekPX5 *>(dev))->write_FlatTopWidth(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-		{return (static_cast<AmptekPX5 *>(dev))->is_FlatTopWidth_allowed(ty);}
-};
-
-//	Attribute PeakingTime class definition
-class PeakingTimeAttrib: public Tango::Attr
-{
-public:
-	PeakingTimeAttrib():Attr("PeakingTime",
-	                   Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
-	~PeakingTimeAttrib() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-		{(static_cast<AmptekPX5 *>(dev))->read_PeakingTime(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-		{(static_cast<AmptekPX5 *>(dev))->write_PeakingTime(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-		{return (static_cast<AmptekPX5 *>(dev))->is_PeakingTime_allowed(ty);}
-};
-
-//	Attribute MCAC class definition
-class MCACAttrib: public Tango::Attr
-{
-public:
-	MCACAttrib():Attr("MCAC",
-	                   Tango::DEV_ULONG, Tango::READ_WRITE) {};
-	~MCACAttrib() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-		{(static_cast<AmptekPX5 *>(dev))->read_MCAC(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-		{(static_cast<AmptekPX5 *>(dev))->write_MCAC(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-		{return (static_cast<AmptekPX5 *>(dev))->is_MCAC_allowed(ty);}
-};
-
-//	Attribute FineGain class definition
-class FineGainAttrib: public Tango::Attr
-{
-public:
-	FineGainAttrib():Attr("FineGain",
-	                   Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
-	~FineGainAttrib() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-		{(static_cast<AmptekPX5 *>(dev))->read_FineGain(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-		{(static_cast<AmptekPX5 *>(dev))->write_FineGain(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-		{return (static_cast<AmptekPX5 *>(dev))->is_FineGain_allowed(ty);}
-};
-
-//	Attribute TotalGain class definition
-class TotalGainAttrib: public Tango::Attr
-{
-public:
-	TotalGainAttrib():Attr("TotalGain",
-	                   Tango::DEV_DOUBLE, Tango::READ) {};
-	~TotalGainAttrib() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-		{(static_cast<AmptekPX5 *>(dev))->read_TotalGain(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-		{return (static_cast<AmptekPX5 *>(dev))->is_TotalGain_allowed(ty);}
+		{return (static_cast<AmptekPX5 *>(dev))->is_AuxOut1_allowed(ty);}
 };
 
 //	Attribute Clock class definition
@@ -207,9 +82,8 @@ class ClockAttrib: public Tango::Attr
 {
 public:
 	ClockAttrib():Attr("Clock",
-	                   Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
+			Tango::DEV_LONG, Tango::READ_WRITE) {};
 	~ClockAttrib() {};
-	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
 		{(static_cast<AmptekPX5 *>(dev))->read_Clock(att);}
 	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
@@ -218,18 +92,401 @@ public:
 		{return (static_cast<AmptekPX5 *>(dev))->is_Clock_allowed(ty);}
 };
 
+//	Attribute CoarseGain class definition
+class CoarseGainAttrib: public Tango::Attr
+{
+public:
+	CoarseGainAttrib():Attr("CoarseGain",
+			Tango::DEV_SHORT, Tango::READ_WRITE) {};
+	~CoarseGainAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->read_CoarseGain(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->write_CoarseGain(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<AmptekPX5 *>(dev))->is_CoarseGain_allowed(ty);}
+};
+
+//	Attribute Con1 class definition
+class Con1Attrib: public Tango::Attr
+{
+public:
+	Con1Attrib():Attr("Con1",
+			Tango::DEV_STRING, Tango::READ_WRITE) {};
+	~Con1Attrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->read_Con1(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->write_Con1(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<AmptekPX5 *>(dev))->is_Con1_allowed(ty);}
+};
+
 //	Attribute DeadTime class definition
 class DeadTimeAttrib: public Tango::Attr
 {
 public:
 	DeadTimeAttrib():Attr("DeadTime",
-	                   Tango::DEV_DOUBLE, Tango::READ) {};
+			Tango::DEV_DOUBLE, Tango::READ) {};
 	~DeadTimeAttrib() {};
-	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
 		{(static_cast<AmptekPX5 *>(dev))->read_DeadTime(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
 		{return (static_cast<AmptekPX5 *>(dev))->is_DeadTime_allowed(ty);}
+};
+
+//	Attribute FastCount class definition
+class FastCountAttrib: public Tango::Attr
+{
+public:
+	FastCountAttrib():Attr("FastCount",
+			Tango::DEV_ULONG, Tango::READ) {};
+	~FastCountAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->read_FastCount(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<AmptekPX5 *>(dev))->is_FastCount_allowed(ty);}
+};
+
+//	Attribute FineGain class definition
+class FineGainAttrib: public Tango::Attr
+{
+public:
+	FineGainAttrib():Attr("FineGain",
+			Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
+	~FineGainAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->read_FineGain(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->write_FineGain(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<AmptekPX5 *>(dev))->is_FineGain_allowed(ty);}
+};
+
+//	Attribute FlatTopWidth class definition
+class FlatTopWidthAttrib: public Tango::Attr
+{
+public:
+	FlatTopWidthAttrib():Attr("FlatTopWidth",
+			Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
+	~FlatTopWidthAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->read_FlatTopWidth(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->write_FlatTopWidth(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<AmptekPX5 *>(dev))->is_FlatTopWidth_allowed(ty);}
+};
+
+//	Attribute MCAC class definition
+class MCACAttrib: public Tango::Attr
+{
+public:
+	MCACAttrib():Attr("MCAC",
+			Tango::DEV_ULONG, Tango::READ_WRITE) {};
+	~MCACAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->read_MCAC(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->write_MCAC(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<AmptekPX5 *>(dev))->is_MCAC_allowed(ty);}
+};
+
+//	Attribute PeakingTime class definition
+class PeakingTimeAttrib: public Tango::Attr
+{
+public:
+	PeakingTimeAttrib():Attr("PeakingTime",
+			Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
+	~PeakingTimeAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->read_PeakingTime(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->write_PeakingTime(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<AmptekPX5 *>(dev))->is_PeakingTime_allowed(ty);}
+};
+
+//	Attribute PileupReject class definition
+class PileupRejectAttrib: public Tango::Attr
+{
+public:
+	PileupRejectAttrib():Attr("PileupReject",
+			Tango::DEV_STRING, Tango::READ_WRITE) {};
+	~PileupRejectAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->read_PileupReject(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->write_PileupReject(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<AmptekPX5 *>(dev))->is_PileupReject_allowed(ty);}
+};
+
+//	Attribute SCA1HT class definition
+class SCA1HTAttrib: public Tango::Attr
+{
+public:
+	SCA1HTAttrib():Attr("SCA1HT",
+			Tango::DEV_ULONG, Tango::READ_WRITE) {};
+	~SCA1HTAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->read_SCA1HT(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->write_SCA1HT(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<AmptekPX5 *>(dev))->is_SCA1HT_allowed(ty);}
+};
+
+//	Attribute SCA1LT class definition
+class SCA1LTAttrib: public Tango::Attr
+{
+public:
+	SCA1LTAttrib():Attr("SCA1LT",
+			Tango::DEV_ULONG, Tango::READ_WRITE) {};
+	~SCA1LTAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->read_SCA1LT(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->write_SCA1LT(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<AmptekPX5 *>(dev))->is_SCA1LT_allowed(ty);}
+};
+
+//	Attribute SCA2HT class definition
+class SCA2HTAttrib: public Tango::Attr
+{
+public:
+	SCA2HTAttrib():Attr("SCA2HT",
+			Tango::DEV_ULONG, Tango::READ_WRITE) {};
+	~SCA2HTAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->read_SCA2HT(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->write_SCA2HT(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<AmptekPX5 *>(dev))->is_SCA2HT_allowed(ty);}
+};
+
+//	Attribute SCA2LT class definition
+class SCA2LTAttrib: public Tango::Attr
+{
+public:
+	SCA2LTAttrib():Attr("SCA2LT",
+			Tango::DEV_ULONG, Tango::READ_WRITE) {};
+	~SCA2LTAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->read_SCA2LT(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->write_SCA2LT(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<AmptekPX5 *>(dev))->is_SCA2LT_allowed(ty);}
+};
+
+//	Attribute SCA3HT class definition
+class SCA3HTAttrib: public Tango::Attr
+{
+public:
+	SCA3HTAttrib():Attr("SCA3HT",
+			Tango::DEV_ULONG, Tango::READ_WRITE) {};
+	~SCA3HTAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->read_SCA3HT(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->write_SCA3HT(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<AmptekPX5 *>(dev))->is_SCA3HT_allowed(ty);}
+};
+
+//	Attribute SCA3LT class definition
+class SCA3LTAttrib: public Tango::Attr
+{
+public:
+	SCA3LTAttrib():Attr("SCA3LT",
+			Tango::DEV_ULONG, Tango::READ_WRITE) {};
+	~SCA3LTAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->read_SCA3LT(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->write_SCA3LT(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<AmptekPX5 *>(dev))->is_SCA3LT_allowed(ty);}
+};
+
+//	Attribute SCA4HT class definition
+class SCA4HTAttrib: public Tango::Attr
+{
+public:
+	SCA4HTAttrib():Attr("SCA4HT",
+			Tango::DEV_ULONG, Tango::READ_WRITE) {};
+	~SCA4HTAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->read_SCA4HT(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->write_SCA4HT(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<AmptekPX5 *>(dev))->is_SCA4HT_allowed(ty);}
+};
+
+//	Attribute SCA4LT class definition
+class SCA4LTAttrib: public Tango::Attr
+{
+public:
+	SCA4LTAttrib():Attr("SCA4LT",
+			Tango::DEV_ULONG, Tango::READ_WRITE) {};
+	~SCA4LTAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->read_SCA4LT(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->write_SCA4LT(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<AmptekPX5 *>(dev))->is_SCA4LT_allowed(ty);}
+};
+
+//	Attribute SCA5HT class definition
+class SCA5HTAttrib: public Tango::Attr
+{
+public:
+	SCA5HTAttrib():Attr("SCA5HT",
+			Tango::DEV_ULONG, Tango::READ_WRITE) {};
+	~SCA5HTAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->read_SCA5HT(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->write_SCA5HT(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<AmptekPX5 *>(dev))->is_SCA5HT_allowed(ty);}
+};
+
+//	Attribute SCA5LT class definition
+class SCA5LTAttrib: public Tango::Attr
+{
+public:
+	SCA5LTAttrib():Attr("SCA5LT",
+			Tango::DEV_ULONG, Tango::READ_WRITE) {};
+	~SCA5LTAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->read_SCA5LT(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->write_SCA5LT(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<AmptekPX5 *>(dev))->is_SCA5LT_allowed(ty);}
+};
+
+//	Attribute SCA6HT class definition
+class SCA6HTAttrib: public Tango::Attr
+{
+public:
+	SCA6HTAttrib():Attr("SCA6HT",
+			Tango::DEV_ULONG, Tango::READ_WRITE) {};
+	~SCA6HTAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->read_SCA6HT(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->write_SCA6HT(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<AmptekPX5 *>(dev))->is_SCA6HT_allowed(ty);}
+};
+
+//	Attribute SCA6LT class definition
+class SCA6LTAttrib: public Tango::Attr
+{
+public:
+	SCA6LTAttrib():Attr("SCA6LT",
+			Tango::DEV_ULONG, Tango::READ_WRITE) {};
+	~SCA6LTAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->read_SCA6LT(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->write_SCA6LT(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<AmptekPX5 *>(dev))->is_SCA6LT_allowed(ty);}
+};
+
+//	Attribute SCA7HT class definition
+class SCA7HTAttrib: public Tango::Attr
+{
+public:
+	SCA7HTAttrib():Attr("SCA7HT",
+			Tango::DEV_ULONG, Tango::READ_WRITE) {};
+	~SCA7HTAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->read_SCA7HT(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->write_SCA7HT(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<AmptekPX5 *>(dev))->is_SCA7HT_allowed(ty);}
+};
+
+//	Attribute SCA7LT class definition
+class SCA7LTAttrib: public Tango::Attr
+{
+public:
+	SCA7LTAttrib():Attr("SCA7LT",
+			Tango::DEV_ULONG, Tango::READ_WRITE) {};
+	~SCA7LTAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->read_SCA7LT(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->write_SCA7LT(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<AmptekPX5 *>(dev))->is_SCA7LT_allowed(ty);}
+};
+
+//	Attribute SCA8HT class definition
+class SCA8HTAttrib: public Tango::Attr
+{
+public:
+	SCA8HTAttrib():Attr("SCA8HT",
+			Tango::DEV_ULONG, Tango::READ_WRITE) {};
+	~SCA8HTAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->read_SCA8HT(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->write_SCA8HT(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<AmptekPX5 *>(dev))->is_SCA8HT_allowed(ty);}
+};
+
+//	Attribute SCA8LT class definition
+class SCA8LTAttrib: public Tango::Attr
+{
+public:
+	SCA8LTAttrib():Attr("SCA8LT",
+			Tango::DEV_ULONG, Tango::READ_WRITE) {};
+	~SCA8LTAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->read_SCA8LT(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->write_SCA8LT(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<AmptekPX5 *>(dev))->is_SCA8LT_allowed(ty);}
+};
+
+//	Attribute SlowCount class definition
+class SlowCountAttrib: public Tango::Attr
+{
+public:
+	SlowCountAttrib():Attr("SlowCount",
+			Tango::DEV_ULONG, Tango::READ) {};
+	~SlowCountAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->read_SlowCount(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<AmptekPX5 *>(dev))->is_SlowCount_allowed(ty);}
+};
+
+//	Attribute TotalGain class definition
+class TotalGainAttrib: public Tango::Attr
+{
+public:
+	TotalGainAttrib():Attr("TotalGain",
+			Tango::DEV_DOUBLE, Tango::READ) {};
+	~TotalGainAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<AmptekPX5 *>(dev))->read_TotalGain(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<AmptekPX5 *>(dev))->is_TotalGain_allowed(ty);}
 };
 
 //	Attribute Spectrum class definition
@@ -237,17 +494,13 @@ class SpectrumAttrib: public Tango::SpectrumAttr
 {
 public:
 	SpectrumAttrib():SpectrumAttr("Spectrum",
-	                   Tango::DEV_ULONG, Tango::READ, 8192) {};
+			Tango::DEV_ULONG, Tango::READ, 8192) {};
 	~SpectrumAttrib() {};
-	
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
 		{(static_cast<AmptekPX5 *>(dev))->read_Spectrum(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
 		{return (static_cast<AmptekPX5 *>(dev))->is_Spectrum_allowed(ty);}
 };
-
-
-
 
 
 //=========================================
@@ -461,60 +714,53 @@ public:
 };
 
 
-
-
-
 /**
- *	The TemplateDevServClass singleton definition
+ *	The AmptekPX5Class singleton definition
  */
 
-class
 #ifdef _TG_WINDOWS_
-	__declspec(dllexport)
+class __declspec(dllexport)  AmptekPX5Class : public Tango::DeviceClass
+#else
+class AmptekPX5Class : public Tango::DeviceClass
 #endif
-	AmptekPX5Class : public Tango::DeviceClass
 {
-	/*----- PROTECTED REGION ID(AmptekPX5::Additionnal DServer data members) ENABLED START -----*/
+	/*----- PROTECTED REGION ID(AmptekPX5Class::Additionnal DServer data members) ENABLED START -----*/
 
-	/*----- PROTECTED REGION END -----*/	//	AmptekPX5::Additionnal DServer data members
+	/*----- PROTECTED REGION END -----*/	//	AmptekPX5Class::Additionnal DServer data members
 
-
-
-public:
-//	write class properties data members
-	Tango::DbData	cl_prop;
-	Tango::DbData	cl_def_prop;
-	Tango::DbData	dev_def_prop;
-
-//	Method prototypes
-	static AmptekPX5Class *init(const char *);
-	static AmptekPX5Class *instance();
-	~AmptekPX5Class();
-	Tango::DbDatum	get_class_property(string &);
-	Tango::DbDatum	get_default_device_property(string &);
-	Tango::DbDatum	get_default_class_property(string &);
+	public:
+		//	write class properties data members
+		Tango::DbData	cl_prop;
+		Tango::DbData	cl_def_prop;
+		Tango::DbData	dev_def_prop;
 	
-protected:
-	AmptekPX5Class(string &);
-	static AmptekPX5Class *_instance;
-	void command_factory();
-	void attribute_factory(vector<Tango::Attr *> &);
-	void write_class_property();
-	void set_default_property();
-	void get_class_property();
-	string get_cvstag();
-	string get_cvsroot();
-
-private:
-	void device_factory(const Tango::DevVarStringArray *);
-	void create_static_attribute_list(vector<Tango::Attr *> &);
-	void erase_dynamic_attributes(const Tango::DevVarStringArray *,vector<Tango::Attr *> &);
-	vector<string>	defaultAttList;
-
-
+		//	Method prototypes
+		static AmptekPX5Class *init(const char *);
+		static AmptekPX5Class *instance();
+		~AmptekPX5Class();
+		Tango::DbDatum	get_class_property(string &);
+		Tango::DbDatum	get_default_device_property(string &);
+		Tango::DbDatum	get_default_class_property(string &);
+	
+	protected:
+		AmptekPX5Class(string &);
+		static AmptekPX5Class *_instance;
+		void command_factory();
+		void attribute_factory(vector<Tango::Attr *> &);
+		void write_class_property();
+		void set_default_property();
+		void get_class_property();
+		string get_cvstag();
+		string get_cvsroot();
+	
+	private:
+		void device_factory(const Tango::DevVarStringArray *);
+		void create_static_attribute_list(vector<Tango::Attr *> &);
+		void erase_dynamic_attributes(const Tango::DevVarStringArray *,vector<Tango::Attr *> &);
+		vector<string>	defaultAttList;
+		Tango::Attr *get_attr_object_by_name(vector<Tango::Attr *> &att_list, string attname);
 };
 
-}	//	namespace
+}	//	End of namespace
 
-#endif	//	AMPTEKPX5CLASS_H
-
+#endif   //	AmptekPX5_H

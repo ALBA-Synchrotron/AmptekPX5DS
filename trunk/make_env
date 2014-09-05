@@ -1,3 +1,3 @@
 export MAKE_ENV=/siciliarep/jenkins/ci/ALBA/env
-export TANGO_HOME=/siciliarep/jenkins/ct32suse11/env/TANGO_RELEASE/7.2.6/
+export TANGO_HOME=/siciliarep/jenkins/ct32suse11/env/TANGO_RELEASE/8.1.2/
 
