@@ -3580,7 +3580,7 @@ void AmptekPX5::update_peaking_time()
 //--------------------------------------------------------
 void* AmptekPX5::Auto_Tune_Thread(void *arg)
 {
-	
+	bool error = false;
 	AmptekPX5* amptek_klass = (AmptekPX5*) arg;
   try{  
 
@@ -3624,6 +3624,13 @@ void* AmptekPX5::Auto_Tune_Thread(void *arg)
             //Part of the Status Packet
             int count = 1 ;  
             while (true){  
+            	if (count>1000){
+            	     delete requestPacket;
+                    delete responsePacket;
+                    amptek_klass->thread_exists = false;
+                    error = true;
+                    break;
+            	}
                 sleep(0.5);
                 Packet* requestPacket = new Packet(MIN_PACKET_LEN);
                 requestPacket->initSync();
@@ -3638,12 +3645,13 @@ void* AmptekPX5::Auto_Tune_Thread(void *arg)
                     }
                 catch(AmptekException& e)
                     {
-                        amptek_klass-> set_state(Tango::ALARM);
-                        cout << e.description() << endl;
-                        Tango::Except::throw_exception(
-                                static_cast<const char*> ("AMPTEK_ERROR"),
-                                e.description().c_str(),
-                                static_cast<const char*> ("AmptekPX5::Auto_Tune_Thread()"));
+                	amptek_klass-> set_state(Tango::ALARM);
+                	                    delete requestPacket;
+                	                    delete responsePacket;
+                	                    amptek_klass->thread_exists = false;
+                	                    error = true;
+                	                    break;
+
                     }
 
                 bool  autoTuneStatus = (responsePacket->at(DATA+35) & 0x40)==0 ? false : true;
@@ -3654,7 +3662,14 @@ void* AmptekPX5::Auto_Tune_Thread(void *arg)
                 delete requestPacket;
                 delete responsePacket;
             }
-            
+
+            if (error){
+                cout << "Auto_Tune_Thread(), Error in the AutoFastThreshold  "<< endl;
+               	amptek_klass->disable();
+            	amptek_klass-> set_state(Tango::ALARM);
+               	char *r = "Error";
+               	pthread_exit(r);
+            }
 
             //Part of the threshold Shaped channel
             int max_SCA_point = 512;
@@ -3751,6 +3766,13 @@ void* AmptekPX5::Auto_Tune_Thread(void *arg)
  
 }
 
+void AmptekPX5::send_exception(std::string msg, std::string fun){
+
+	Tango::Except::throw_exception(
+			static_cast<const char*> ("AMPTEK_ERROR"),
+			msg.c_str(), fun.c_str());
+
+}
 
 
 /*----- PROTECTED REGION END -----*/	//	AmptekPX5::namespace_ending
