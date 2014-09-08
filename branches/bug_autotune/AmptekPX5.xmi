@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ASCII"?>
 <pogoDsl:PogoSystem xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pogoDsl="http://www.esrf.fr/tango/pogo/PogoDsl">
   <classes name="AmptekPX5" pogoRevision="8.1">
-    <description description="Device server to control the MCA Amptek PX5. &#xA;The device server implements the communication by UDP socket. It can start and stop one acquisition and after read the Spectrum data. &#xA;In addition it exports some configuration attributes and a command to send ascii commands.&#xA; " title="AmptekPX5" sourcePath="/home/rhoms/workspace/AmptekPX5/branches/sca_conf" language="Cpp" filestogenerate="XMI   file,Code files,html Pages" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false" descriptionHtmlExists="false">
+    <description description="Device server to control the MCA Amptek PX5. &#xA;The device server implements the communication by UDP socket. It can start and stop one acquisition and after read the Spectrum data. &#xA;In addition it exports some configuration attributes and a command to send ascii commands.&#xA; " title="AmptekPX5" sourcePath="/home/rhoms/workspace/AmptekPX5/branches/bug_autotune" language="Cpp" filestogenerate="XMI   file,Code files,html Pages" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false" descriptionHtmlExists="false">
       <inheritances classname="Device_Impl" sourcePath=""/>
       <identification contact="at cells.es - zreszela" author="zreszela" emailDomain="cells.es" classFamily="Acquisition" siteSpecific="" platform="Unix Like" bus="Ethernet" manufacturer="Amptek" reference="PX5"/>
     </description>
@@ -381,6 +381,9 @@
       <properties description="" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
     </attributes>
     <states name="MOVING" description="">
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+    </states>
+    <states name="ALARM" description="">
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </states>
     <preferences docHome="./doc_html" makefileHome="/siciliarep/build/lib/tango/tango.ct32suse11/share/pogo/preferences"/>
