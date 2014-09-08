@@ -3585,7 +3585,7 @@ void* AmptekPX5::Auto_Tune_Thread(void *arg)
 {
 	bool error = false;
 	AmptekPX5* amptek_klass = (AmptekPX5*) arg;
-	amptek_klass->set_state(Tango::Moving);
+	amptek_klass->set_state(Tango::MOVING);
 	amptek_klass->set_status("Run AutoTune");
 	try{
 
