@@ -574,6 +574,7 @@ public:
 	void update_flat_top_width();
 	void update_peaking_time();
 	static void* Auto_Tune_Thread(void *arg);
+	void send_exception(std::string msg, std::string func);
 
 
 
