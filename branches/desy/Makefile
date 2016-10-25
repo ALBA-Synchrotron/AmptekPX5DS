@@ -149,5 +149,15 @@ ADDITIONAL_OBJS =  \
 #
 include $(MAKE_ENV)/common_target.opt
 
+# Add tag if code in branches/desy. Remove if put in trunk 
+# standard DESY tag, check for correct version numbering
+tag:
+ifeq ( $(shell ls -d ../../tags/$(RELEASE)  2>/dev/null), ../../tags/$(RELEASE))
+	@echo $(RELEASE) exists, specify new version numbers
+else
+	svn copy ../desy ../../tags/$(RELEASE)
+	svn commit ../../tags/$(RELEASE) \
+	-m "Tagging the $(RELEASE) of the $(CLASS) project."
+endif
 
 #PROTECTED REGION END#
