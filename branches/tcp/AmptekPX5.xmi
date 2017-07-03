@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ASCII"?>
 <pogoDsl:PogoSystem xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pogoDsl="http://www.esrf.fr/tango/pogo/PogoDsl">
   <classes name="AmptekPX5" pogoRevision="8.4">
-    <description description="Device server to control the MCA Amptek PX5. &#xA;The device server implements the communication by UDP socket. It can start and stop one acquisition and after read the Spectrum data. &#xA;In addition it exports some configuration attributes and a command to send ascii commands.&#xA; " title="AmptekPX5" sourcePath="/home/tnunez/Tango_svn/DeviceClasses/Acquisition/1D/AmptekPX5/trunk.maxiv_sockettcp_desy" language="Cpp" filestogenerate="XMI   file,Code files,html Pages" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false" descriptionHtmlExists="false">
+    <description description="Device server to control the MCA Amptek PX5. &#xA;The device server implements the communication by UDP socket. It can start and stop one acquisition and after read the Spectrum data. &#xA;In addition it exports some configuration attributes and a command to send ascii commands.&#xA; " title="AmptekPX5" sourcePath="/home/tnunez/Tango_svn/DeviceClasses/Acquisition/1D/AmptekPX5/branches/tcp" language="Cpp" filestogenerate="XMI   file,Code files,html Pages" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false" descriptionHtmlExists="false">
       <inheritances classname="Device_Impl" sourcePath=""/>
       <identification contact="at cells.es - zreszela" author="zreszela" emailDomain="cells.es" classFamily="Acquisition" siteSpecific="" platform="Unix Like" bus="Ethernet" manufacturer="Amptek" reference="PX5"/>
     </description>
@@ -23,6 +23,15 @@
       <type xsi:type="pogoDsl:UShortType"/>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
       <DefaultPropValue>2</DefaultPropValue>
+    </deviceProperties>
+    <deviceProperties name="MaskResetLoadConfig" description="0 -> neither reset nor load of the configuration will be done.&#xA;1 -> configuration is reset to default&#xA;2 -> load configuration from the file set in the ConfigurationFile property, without previous reset&#xA;3 -> reset configuration and load from the file set in the ConfigurationFile property">
+      <type xsi:type="pogoDsl:IntType"/>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <DefaultPropValue>1</DefaultPropValue>
+    </deviceProperties>
+    <deviceProperties name="ConfigurationFile" description="Name of the file (full path) with the configuration to be loaded at init.&#xA;Only done if MaskResetLoadConfig is set to 2 or 3.&#xA;The format of the file has to be:&#xA;&#xA;SCAI=15&#xA;SCAL=0&#xA;SCAH=512&#xA;...&#xA;&#xA;Every command in a diferent line.">
+      <type xsi:type="pogoDsl:StringType"/>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </deviceProperties>
     <commands name="State" description="This command gets the device state (stored in its device_state data member) and returns it to the caller." execMethod="dev_state" displayLevel="OPERATOR" polledPeriod="0">
       <argin description="none">

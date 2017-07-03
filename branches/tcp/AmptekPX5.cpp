@@ -336,16 +336,58 @@ void AmptekPX5::init_device()
         commHandler = new AmptekCommHandler(hostname.c_str(), port, timeout, this);
 
 	//this->clear_input_buffer();
-        DEBUG_STREAM <<"Reset the configuration to a known state." << endl;
-       	Tango::DevVarStringArray *send_cmd;
-       	send_cmd = new Tango::DevVarStringArray();
-       	send_cmd->length(1);
-       	string cmd = "RESC=Y";
-        (*send_cmd)[0] = CORBA::string_dup(cmd.c_str());
+
+	if(maskResetLoadConfig & 1){
+	  DEBUG_STREAM <<"Reset the configuration to a known state." << endl;
+	  Tango::DevVarStringArray *send_cmd;
+	  send_cmd = new Tango::DevVarStringArray();
+	  send_cmd->length(1);
+	  string cmd = "RESC=Y";
+	  (*send_cmd)[0] = CORBA::string_dup(cmd.c_str());
     	  this->set_text_configuration(send_cmd);
     	  delete(send_cmd);
-	     string result = this->read_parameter("MCAC");	//LR - length of the spectrum
-        *attr_MCAC_read = atoi(result.c_str());
+	}
+
+	if(maskResetLoadConfig & 2){
+	  string conf_line;
+	  vector<string> commands;
+	  Tango::DevVarStringArray *send_cmd1;
+	  send_cmd1 = new Tango::DevVarStringArray();
+	  Tango::DevVarStringArray *send_cmd2;
+	  send_cmd2 = new Tango::DevVarStringArray();
+	  
+	  try{
+	    ifstream f(configurationFile);
+	    if(f.good()){
+	      while(!f.eof()){
+		getline(f,conf_line);
+		commands.push_back(conf_line);
+	      }
+	      long count_cmd = commands.size();
+	      send_cmd1->length(count_cmd/2 + 1);
+	      send_cmd2->length(count_cmd/2);
+	      for(unsigned int i=0; i<count_cmd/2 + 1; i++){
+		(*send_cmd1)[i] = CORBA::string_dup(commands[i].c_str());
+	      }
+	      for(unsigned int i= 0 ; i< count_cmd/2 - 1; i++){
+		(*send_cmd2)[i] = CORBA::string_dup(commands[i  + count_cmd/2 + 1].c_str());
+	      }
+	      this->set_text_configuration(send_cmd1);
+	      this->set_text_configuration(send_cmd2);
+	    } else {
+	      
+	      DEBUG_STREAM <<"Configuration file " << configurationFile << " does not exist " << endl;
+	    }
+	  } catch (...){	      
+	    DEBUG_STREAM <<"Not able to load configuration file " << configurationFile << endl;
+	  }
+	  delete(send_cmd1);
+	  delete(send_cmd2);
+	
+	}
+	 
+	string result = this->read_parameter("MCAC");	//LR - length of the spectrum
+	*attr_MCAC_read = atoi(result.c_str());
 
     }
     catch(AmptekException& e)
@@ -380,6 +422,8 @@ void AmptekPX5::get_device_property()
 	dev_prop.push_back(Tango::DbDatum("Port"));
 	dev_prop.push_back(Tango::DbDatum("Timeout"));
 	dev_prop.push_back(Tango::DbDatum("NrOfUdpAttempts"));
+	dev_prop.push_back(Tango::DbDatum("MaskResetLoadConfig"));
+	dev_prop.push_back(Tango::DbDatum("ConfigurationFile"));
 
 	//	is there at least one property to be read ?
 	if (dev_prop.size()>0)
@@ -437,6 +481,28 @@ void AmptekPX5::get_device_property()
 		}
 		//	And try to extract NrOfUdpAttempts value from database
 		if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  nrOfUdpAttempts;
+
+		//	Try to initialize MaskResetLoadConfig from class property
+		cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+		if (cl_prop.is_empty()==false)	cl_prop  >>  maskResetLoadConfig;
+		else {
+			//	Try to initialize MaskResetLoadConfig from default device value
+			def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+			if (def_prop.is_empty()==false)	def_prop  >>  maskResetLoadConfig;
+		}
+		//	And try to extract MaskResetLoadConfig value from database
+		if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  maskResetLoadConfig;
+
+		//	Try to initialize ConfigurationFile from class property
+		cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+		if (cl_prop.is_empty()==false)	cl_prop  >>  configurationFile;
+		else {
+			//	Try to initialize ConfigurationFile from default device value
+			def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+			if (def_prop.is_empty()==false)	def_prop  >>  configurationFile;
+		}
+		//	And try to extract ConfigurationFile value from database
+		if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  configurationFile;
 
 	}
 

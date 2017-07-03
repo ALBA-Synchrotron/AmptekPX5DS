@@ -42,6 +42,30 @@
 		<td> short </td>
 		<td> 2 <br> </td>
 	</tr>
+	<tr>
+		<td> MaskResetLoadConfig </td>
+		<td> 0 -> neither reset nor load of the configuration will be done.<Br>
+			1 -> configuration is reset to default<Br>
+			2 -> load configuration from the file set in the ConfigurationFile property, without previous reset<Br>
+			3 -> reset configuration and load from the file set in the ConfigurationFile property </td>
+		<td> int </td>
+		<td> 1 <br> </td>
+	</tr>
+	<tr>
+		<td> ConfigurationFile </td>
+		<td> Name of the file (full path) with the configuration to be loaded at init.<Br>
+			Only done if MaskResetLoadConfig is set to 2 or 3.<Br>
+			The format of the file has to be:<Br>
+			<Br>
+			SCAI=15<Br>
+			SCAL=0<Br>
+			SCAH=512<Br>
+			...<Br>
+			<Br>
+			Every command in a diferent line. </td>
+		<td> String </td>
+		<td> none </td>
+	</tr>
 </table>
 </body>
 </html>

@@ -69,6 +69,22 @@ public:
 	Tango::DevDouble	timeout;
 	//	NrOfUdpAttempts:	How many time udp request is repeated
 	Tango::DevUShort	nrOfUdpAttempts;
+	//	MaskResetLoadConfig:	0 -> neither reset nor load of the configuration will be done.
+	//  1 -> configuration is reset to default
+	//  2 -> load configuration from the file set in the ConfigurationFile property, without previous reset
+	//  3 -> reset configuration and load from the file set in the ConfigurationFile property
+	Tango::DevLong	maskResetLoadConfig;
+	//	ConfigurationFile:	Name of the file (full path) with the configuration to be loaded at init.
+	//  Only done if MaskResetLoadConfig is set to 2 or 3.
+	//  The format of the file has to be:
+	//  
+	//  SCAI=15
+	//  SCAL=0
+	//  SCAH=512
+	//  ...
+	//  
+	//  Every command in a diferent line.
+	string	configurationFile;
 
 //	Attribute data members
 public:

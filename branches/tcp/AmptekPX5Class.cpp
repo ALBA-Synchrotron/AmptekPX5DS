@@ -618,6 +618,33 @@ void AmptekPX5Class::set_default_property()
 	}
 	else
 		add_wiz_dev_prop(prop_name, prop_desc);
+	prop_name = "MaskResetLoadConfig";
+	prop_desc = "0 -> neither reset nor load of the configuration will be done.\n1 -> configuration is reset to default\n2 -> load configuration from the file set in the ConfigurationFile property, without previous reset\n3 -> reset configuration and load from the file set in the ConfigurationFile property";
+	prop_def  = "1";
+	vect_data.clear();
+	vect_data.push_back("1");
+	if (prop_def.length()>0)
+	{
+		Tango::DbDatum	data(prop_name);
+		data << vect_data ;
+		dev_def_prop.push_back(data);
+		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+	}
+	else
+		add_wiz_dev_prop(prop_name, prop_desc);
+	prop_name = "ConfigurationFile";
+	prop_desc = "Name of the file (full path) with the configuration to be loaded at init.\nOnly done if MaskResetLoadConfig is set to 2 or 3.\nThe format of the file has to be:\n\nSCAI=15\nSCAL=0\nSCAH=512\n...\n\nEvery command in a diferent line.";
+	prop_def  = "";
+	vect_data.clear();
+	if (prop_def.length()>0)
+	{
+		Tango::DbDatum	data(prop_name);
+		data << vect_data ;
+		dev_def_prop.push_back(data);
+		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+	}
+	else
+		add_wiz_dev_prop(prop_name, prop_desc);
 }
 
 //--------------------------------------------------------
